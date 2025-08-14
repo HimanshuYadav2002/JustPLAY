@@ -33,7 +33,7 @@ class SearchPage extends StatelessWidget {
                 fillColor: Colors.white10,
                 suffixIcon: Icon(Icons.search, color: Colors.white70, size: 30),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide.none,
                 ),
               ),

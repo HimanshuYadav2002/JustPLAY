@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/Providers/navigation_index_provider.dart';
+import 'package:provider/provider.dart';
 
 class PlaylistPage extends StatelessWidget {
   final String playlistName;
@@ -34,40 +36,29 @@ class PlaylistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentIndexProvider = Provider.of<CurrentIndexProvider>(context);
     return SafeArea(
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () {},
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+        child: Column(
+          children: [
+            Center(
+              child: Text(
+                playlistName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                Expanded(
-                  child: Text(
-                    playlistName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 48), // to balance back button space
-              ],
+              ),
             ),
-          ),
+            SizedBox(height: 20),
 
-          // Search & Sort Row
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            child: Row(
+            // Search & Sort Row
+            Row(
               children: [
-                Expanded(
+                Expanded(flex: 3,
                   child: TextField(
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
@@ -83,77 +74,119 @@ class PlaylistPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 20),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 60,
-                    height: 55,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white10,
-                    ),
-                    child: Text(
-                      "Sort",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                SizedBox(width: 10),
+                Expanded(flex: 1,
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 60,
+                      height: 55,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white10,
+                      ),
+                      child: Text(
+                        "Sort",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-          ),
+            SizedBox(height: 20),
 
-          // Songs List
-          Expanded(
-            child: ListView.builder(
-              itemCount: songs.length,
-              itemBuilder: (context, index) {
-                final song = songs[index];
-                return ListTile(
-                  leading: Image.network(
-                    song['image'],
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(
-                    song['title'],
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    song['artist'],
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  trailing: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: playlistName.toLowerCase() == "liked songs"
-                        ? [
-                            Icon(Icons.favorite, color: Colors.green,size: 30,),
-                            SizedBox(width: 20),
-                            Icon(
-                              Icons.cloud_download_outlined,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ]
-                        : [],
-                  ),
-                );
-              },
+            // Songs List
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemCount: songs.length,
+                  itemBuilder: (context, index) {
+                    final song = songs[index];
+                    return _songTile(
+                      song['image'],
+                      song['title'],
+                      song['artist'],
+                      currentIndexProvider.setCurrentIndex,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _songTile(
+    String image,
+    String title,
+    String subtitle,
+    void Function(int newIndex) setCurrentIndex,
+  ) {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () => setCurrentIndex(4),
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: NetworkImage(image),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: playlistName.toLowerCase() == "liked songs"
+              ? [
+                  Icon(Icons.favorite, color: Colors.green, size: 30),
+                  SizedBox(width: 20),
+                  Icon(
+                    Icons.cloud_download_outlined,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ]
+              : [],
+        ),
+      ],
     );
   }
 }

@@ -148,7 +148,7 @@ class LibraryPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         text,
