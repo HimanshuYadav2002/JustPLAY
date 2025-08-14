@@ -188,7 +188,6 @@ class _JustPLAYState extends State<JustPLAY> {
       debugShowCheckedModeBanner: false,
       title: 'JustPLAY',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF0C2018), // dark green-ish
         brightness: Brightness.dark,
         textTheme: GoogleFonts.poppinsTextTheme(
           Theme.of(context).textTheme.apply(bodyColor: Colors.white),
@@ -196,7 +195,7 @@ class _JustPLAYState extends State<JustPLAY> {
       ),
       home: Scaffold(
         // Keep the same dark background
-        backgroundColor: const Color(0xFF0C2018),
+        backgroundColor: Colors.black,
         body: pages[currentIndexProvider.currentIndex],
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(
@@ -204,9 +203,8 @@ class _JustPLAYState extends State<JustPLAY> {
             highlightColor: Colors.transparent,
           ),
           child: BottomNavigationBar(
+            backgroundColor: Colors.black,
             iconSize: 30,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: const Color(0xFF0C2018),
             currentIndex: currentIndexProvider.navigationCurrentIndex,
             onTap: (i) =>
                 setState(() => currentIndexProvider.setCurrentIndex(i)),

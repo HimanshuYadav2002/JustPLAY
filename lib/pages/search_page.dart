@@ -8,36 +8,34 @@ class SearchPage extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding:
-            const EdgeInsets.only(left: 20.0, right: 20.0, top: 18, bottom: 18),
+            const EdgeInsets.only(left: 20.0, right: 20.0, top: 20, bottom: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Search',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
+            Center(
+              child: Text(
+                'Search',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 20),
             // search field look
-            Container(
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  const Icon(Icons.search, color: Colors.white60),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Artists, songs, or podcasts',
-                    style: TextStyle(color: Colors.white54, fontSize: 14),
-                  ),
-                ],
+            TextField(
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: "Song , Artist , Album",
+                hintStyle: TextStyle(color: Colors.white70),
+                filled: true,
+                fillColor: Colors.white10,
+                suffixIcon: Icon(Icons.search, color: Colors.white70,size: 30,),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
             const SizedBox(height: 20),

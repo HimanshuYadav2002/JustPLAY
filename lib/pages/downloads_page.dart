@@ -35,6 +35,65 @@ class DownloadsPage extends StatelessWidget {
       'artist': 'Oliver Miles',
       'image':
           'https://images.unsplash.com/photo-1507878866276-a947ef722fee?auto=format&fit=crop&w=400&q=60',
+    },{
+      'title': 'Midnight Serenade',
+      'artist': 'The Night Owls',
+      'image':
+          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Ocean Breeze',
+      'artist': 'Liam Carter',
+      'image':
+          'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Sunset Drive',
+      'artist': 'Ethan Dubois',
+      'image':
+          'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Acoustic Vibes',
+      'artist': 'Ava Summers',
+      'image':
+          'https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Rainy Day Jazz',
+      'artist': 'Oliver Miles',
+      'image':
+          'https://images.unsplash.com/photo-1507878866276-a947ef722fee?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Midnight Serenade',
+      'artist': 'The Night Owls',
+      'image':
+          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Ocean Breeze',
+      'artist': 'Liam Carter',
+      'image':
+          'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Sunset Drive',
+      'artist': 'Ethan Dubois',
+      'image':
+          'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Acoustic Vibes',
+      'artist': 'Ava Summers',
+      'image':
+          'https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60',
+    },
+    {
+      'title': 'Rainy Day Jazz',
+      'artist': 'Oliver Miles',
+      'image':
+          'https://images.unsplash.com/photo-1507878866276-a947ef722fee?auto=format&fit=crop&w=400&q=60',
     },
   ];
 
@@ -44,24 +103,26 @@ class DownloadsPage extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(
-          left: 18.0,
-          right: 18.0,
-          top: 16.0,
-          bottom: 16,
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: 15,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
-            Text(
-              'Downloads',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
+            Center(
+              child: Text(
+                'Downloads',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
             // Songs list
             Expanded(
               child: ListView.separated(
