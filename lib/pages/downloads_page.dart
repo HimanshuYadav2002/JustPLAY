@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
+import 'package:music_app/components/mini_player.dart';
 import 'package:provider/provider.dart';
 
 class DownloadsPage extends StatelessWidget {
@@ -35,7 +36,8 @@ class DownloadsPage extends StatelessWidget {
       'artist': 'Oliver Miles',
       'image':
           'https://images.unsplash.com/photo-1507878866276-a947ef722fee?auto=format&fit=crop&w=400&q=60',
-    },{
+    },
+    {
       'title': 'Midnight Serenade',
       'artist': 'The Night Owls',
       'image':
@@ -102,12 +104,7 @@ class DownloadsPage extends StatelessWidget {
     final currentIndexProvider = Provider.of<CurrentIndexProvider>(context);
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 15,
-        ),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -125,20 +122,31 @@ class DownloadsPage extends StatelessWidget {
             const SizedBox(height: 20),
             // Songs list
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  final song = songs[index];
-                  return _songTile(
-                    song['image']!,
-                    song['title']!,
-                    song['artist']!,
-                    currentIndexProvider.setCurrentIndex,
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
-                itemCount: songs.length,
+              child: Padding(
+                padding: const EdgeInsets.only(left:8),
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    final song = songs[index];
+                    return _songTile(
+                      song['image']!,
+                      song['title']!,
+                      song['artist']!,
+                      currentIndexProvider.setCurrentIndex,
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemCount: songs.length,
+                ),
               ),
+            ),
+            MiniPlayer(
+              title: "Kwaku the Traveller",
+              artist: "Black Sherif",
+              imageUrl:
+                  "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60",
+              isLiked: true,
+              progress: 0.3,
             ),
           ],
         ),

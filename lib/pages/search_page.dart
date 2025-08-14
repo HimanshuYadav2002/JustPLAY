@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/components/mini_player.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -7,8 +8,7 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding:
-            const EdgeInsets.only(left: 20.0, right: 20.0, top: 20, bottom: 15),
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,7 +31,7 @@ class SearchPage extends StatelessWidget {
                 hintStyle: TextStyle(color: Colors.white70),
                 filled: true,
                 fillColor: Colors.white10,
-                suffixIcon: Icon(Icons.search, color: Colors.white70,size: 30,),
+                suffixIcon: Icon(Icons.search, color: Colors.white70, size: 30),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
@@ -46,6 +46,14 @@ class SearchPage extends StatelessWidget {
                   style: TextStyle(color: Colors.white54),
                 ),
               ),
+            ),
+            MiniPlayer(
+              title: "Kwaku the Traveller",
+              artist: "Black Sherif",
+              imageUrl:
+                  "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60",
+              isLiked: true,
+              progress: 0.3,
             ),
           ],
         ),

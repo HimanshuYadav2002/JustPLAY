@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
+import 'package:music_app/components/mini_player.dart';
 import 'package:provider/provider.dart';
 
 class LibraryPage extends StatelessWidget {
@@ -85,7 +86,7 @@ class LibraryPage extends StatelessWidget {
     final currentIndexProvider = Provider.of<CurrentIndexProvider>(context);
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.only(left: 20,top: 20, right: 20, bottom: 15),
+        padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -102,27 +103,39 @@ class LibraryPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             // pills row
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [_pill('Playlists'),
-                  _pill('Albums'),
-                  _pill('Artists'),],),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [_pill('Playlists'), _pill('Albums'), _pill('Artists')],
+            ),
 
             const SizedBox(height: 20),
             // list of playlists
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  final it = items[index];
-                  return _libraryTile(
-                    it['image']!,
-                    it['title']!,
-                    it['subtitle']!,
-                    currentIndexProvider.setCurrentIndex,
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
-                itemCount: items.length,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    final it = items[index];
+                    return _libraryTile(
+                      it['image']!,
+                      it['title']!,
+                      it['subtitle']!,
+                      currentIndexProvider.setCurrentIndex,
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemCount: items.length,
+                ),
               ),
+            ),
+            MiniPlayer(
+              title: "Kwaku the Traveller",
+              artist: "Black Sherif",
+              imageUrl:
+                  "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60",
+              isLiked: true,
+              progress: 0.3,
             ),
           ],
         ),
@@ -132,7 +145,7 @@ class LibraryPage extends StatelessWidget {
 
   Widget _pill(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(10),
