@@ -58,7 +58,8 @@ class PlaylistPage extends StatelessWidget {
             // Search & Sort Row
             Row(
               children: [
-                Expanded(flex: 3,
+                Expanded(
+                  flex: 3,
                   child: TextField(
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
@@ -75,7 +76,8 @@ class PlaylistPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10),
-                Expanded(flex: 1,
+                Expanded(
+                  flex: 1,
                   child: GestureDetector(
                     onTap: () {},
                     child: Container(
@@ -184,7 +186,21 @@ class PlaylistPage extends StatelessWidget {
                     size: 30,
                   ),
                 ]
-              : [],
+              : [
+                  Icon(Icons.favorite, color: Colors.green, size: 30),
+                  SizedBox(width: 20),
+                  Icon(
+                    Icons.cloud_download_outlined,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  SizedBox(width: 20),
+                  Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ],
         ),
       ],
     );
