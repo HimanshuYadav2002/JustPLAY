@@ -4,6 +4,7 @@ import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/models/song_model.dart';
 
 class MiniPlayer extends StatelessWidget {
+  final int songIndex;
   final Song song;
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
@@ -11,6 +12,7 @@ class MiniPlayer extends StatelessWidget {
 
   const MiniPlayer({
     super.key,
+    required this.songIndex,
     required this.song,
     required this.currentIndexProvider,
     required this.dataProvider,
@@ -68,9 +70,13 @@ class MiniPlayer extends StatelessWidget {
               const SizedBox(width: 8),
 
               // Heart icon
-              Icon(
-                Icons.favorite,
-                color: dataProvider.clickedPlaylist!.name.toLowerCase() =="liked songs" ? Colors.green : Colors.white70,
+              IconButton(
+                onPressed: () {
+                  dataProvider.addToPlaylist(dataProvider.likedSongs, song);
+                },
+                icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+                    ? Icon(Icons.favorite, color: Colors.green, size: 30)
+                    : Icon(Icons.favorite_outline, size: 30),
               ),
               const SizedBox(width: 12),
 
