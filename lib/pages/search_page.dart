@@ -1,53 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/Providers/data_provider.dart';
+import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/components/mini_player.dart';
+import 'package:music_app/components/song_tile.dart';
+import 'package:music_app/models/song_model.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:dart_ytmusic_api/yt_music.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final CurrentIndexProvider currentIndexProvider;
+  final DataProvider dataProvider;
+  const SearchPage({
+    super.key,
+    required this.currentIndexProvider,
+    required this.dataProvider,
+  });
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final ytmusicapi = YTMusic();
+
   final yt = YoutubeExplode();
   final player = AudioPlayer();
   final searchController = TextEditingController();
   List<Video> results = [];
+  List<Song> songList = [];
   bool isLoading = false;
   String? currentlyPlayingId;
 
   @override
-  void dispose() {
-    yt.close();
-    player.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    initYTMusic();
   }
 
-  Future<void> searchVideos(String query) async {
+  Future<void> initYTMusic() async {
+    await ytmusicapi.initialize(); // this loads the API key & configs
+  }
+
+  Future<void> searchSongs(String query) async {
     if (query.trim().isEmpty) {
       setState(() {
-        results.clear();
+        songList.clear();
       });
       return;
     }
+
     setState(() {
       isLoading = true;
+      songList.clear();
     });
 
-    final searchList = await yt.search.search(query);
+    // 🔹 Fetch songs (audio tracks only) from YouTube Music
+    final searchResults = await ytmusicapi.searchSongs(query);
 
     setState(() {
-      results = searchList.toList();
+      songList = searchResults.take(10).map((track) {
+        return Song(
+          id: track.videoId, // YT Music song/video ID
+          name: track.name,
+          artist: track.artist.name,
+          imageUrl: track.thumbnails.first.url, // use first thumbnail
+        );
+      }).toList();
       isLoading = false;
     });
   }
 
-  Future<void> playAudio(Video video) async {
+  Future<void> playAudio(Song video) async {
     try {
       setState(() {
-        currentlyPlayingId = video.id.value;
+        currentlyPlayingId = video.id;
       });
       final manifest = await yt.videos.streamsClient.getManifest(video.id);
       final audioInfo = manifest.audioOnly.withHighestBitrate();
@@ -80,7 +107,7 @@ class _SearchPageState extends State<SearchPage> {
             // search field look
             TextField(
               controller: searchController,
-              onSubmitted: searchVideos,
+              onSubmitted: searchSongs,
               style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: "Song , Artist , Album",
@@ -97,34 +124,25 @@ class _SearchPageState extends State<SearchPage> {
             if (isLoading) const LinearProgressIndicator(),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: results.length,
-                itemBuilder: (_, i) {
-                  final video = results[i];
-                  final thumbUrl = video.thumbnails.highResUrl;
-                  final isPlaying = video.id.value == currentlyPlayingId;
-
-                  return ListTile(
-                    leading: Image.network(
-                      thumbUrl,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      video.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(video.author),
-                    trailing: Icon(
-                      isPlaying ? Icons.pause_circle : Icons.play_circle,
-                      color: Colors.blue,
-                      size: 32,
-                    ),
-                    onTap: () => playAudio(video),
-                  );
-                },
+              child: Padding(
+                padding: const EdgeInsets.only(left:8),
+                child: ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemCount: songList.length,
+                  itemBuilder: (context, i) {
+                    final song = songList[i];
+                
+                    return GestureDetector(
+                      onTap: () => playAudio(song),
+                      child: SongTile(
+                        song: song,
+                        currentIndexProvider: widget.currentIndexProvider,
+                        dataProvider: widget.dataProvider,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             MiniPlayer(

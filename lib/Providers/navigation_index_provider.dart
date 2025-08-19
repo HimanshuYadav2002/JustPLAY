@@ -6,14 +6,13 @@ class CurrentIndexProvider with ChangeNotifier {
   int get currentIndex => _currentIndex;
   int get navigationCurrentIndex => _navigationCurrentIndex;
 
-  void setCurrentIndex(int newIndex) {
-    if (_currentIndex != newIndex && newIndex < 3) {
-      _currentIndex = newIndex;
-      _navigationCurrentIndex = newIndex;
-      notifyListeners();
-    } else {
-      _currentIndex = newIndex;
-      notifyListeners();
-    }
+  void setNavigationIndex(int index) {
+    _navigationCurrentIndex = index;
+    notifyListeners();
+  }
+
+  void setCurrentIndex(int index) {
+    _currentIndex = index;
+    notifyListeners();
   }
 }
