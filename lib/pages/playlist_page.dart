@@ -106,14 +106,13 @@ class PlaylistPage extends StatelessWidget {
                 ),
               ),
             ),
-            MiniPlayer(
-              title: "Kwaku the Traveller",
-              artist: "Black Sherif",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60",
-              isLiked: true,
-              progress: 0.3,
-            ),
+            (dataProvider.clickedSong != null)
+                ? MiniPlayer(
+                    song: dataProvider.clickedSong!,
+                    currentIndexProvider: currentIndexProvider,
+                    dataProvider: dataProvider,
+                  )
+                : SizedBox(),
           ],
         ),
       ),

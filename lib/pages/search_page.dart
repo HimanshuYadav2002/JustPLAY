@@ -71,19 +71,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  Future<void> playAudio(Song video) async {
-    try {
-      setState(() {
-        currentlyPlayingId = video.id;
-      });
-      final manifest = await yt.videos.streamsClient.getManifest(video.id);
-      final audioInfo = manifest.audioOnly.withHighestBitrate();
-      await player.setUrl(audioInfo.url.toString());
-      await player.play();
-    } catch (e) {
-      debugPrint("Error playing audio: $e");
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -121,38 +109,35 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
-            if (isLoading) const LinearProgressIndicator(),
             const SizedBox(height: 20),
+            if (isLoading)
+              Expanded(child: Center(child: const CircularProgressIndicator())),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left:8),
+                padding: const EdgeInsets.only(left: 8),
                 child: ListView.separated(
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 12),
                   itemCount: songList.length,
                   itemBuilder: (context, i) {
                     final song = songList[i];
-                
-                    return GestureDetector(
-                      onTap: () => playAudio(song),
-                      child: SongTile(
-                        song: song,
-                        currentIndexProvider: widget.currentIndexProvider,
-                        dataProvider: widget.dataProvider,
-                      ),
+
+                    return SongTile(
+                      song: song,
+                      currentIndexProvider: widget.currentIndexProvider,
+                      dataProvider: widget.dataProvider,
                     );
                   },
                 ),
               ),
             ),
-            MiniPlayer(
-              title: "Kwaku the Traveller",
-              artist: "Black Sherif",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60",
-              isLiked: true,
-              progress: 0.3,
-            ),
+            (widget.dataProvider.clickedSong != null)
+                ? MiniPlayer(
+                    song: widget.dataProvider.clickedSong!,
+                    currentIndexProvider: widget.currentIndexProvider,
+                    dataProvider: widget.dataProvider,
+                  )
+                : SizedBox(),
           ],
         ),
       ),

@@ -35,7 +35,8 @@ class LibraryPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             // pills row
-            Row(spacing: 10,
+            Row(
+              spacing: 10,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(child: _pill('Playlists')),
@@ -55,6 +56,7 @@ class LibraryPage extends StatelessWidget {
                     return PlaylistTile(
                       playlist: playlist,
                       currentIndexProvider: currentIndexProvider,
+                      dataProvider: dataProvider,
                     );
                   },
                   separatorBuilder: (context, index) =>
@@ -63,14 +65,13 @@ class LibraryPage extends StatelessWidget {
                 ),
               ),
             ),
-            MiniPlayer(
-              title: "Kwaku the Traveller",
-              artist: "Black Sherif",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=400&q=60",
-              isLiked: true,
-              progress: 0.3,
-            ),
+            (dataProvider.clickedSong != null)
+                ? MiniPlayer(
+                    song: dataProvider.clickedSong!,
+                    currentIndexProvider: currentIndexProvider,
+                    dataProvider: dataProvider,
+                  )
+                : SizedBox(),
           ],
         ),
       ),
@@ -81,7 +82,7 @@ class LibraryPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey.shade900,
+        color: Colors.grey.withAlpha(50),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(

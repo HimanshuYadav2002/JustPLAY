@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/Providers/data_provider.dart';
+import 'package:music_app/Providers/navigation_index_provider.dart';
+import 'package:music_app/models/song_model.dart';
 
 class MiniPlayer extends StatelessWidget {
-  final String title;
-  final String artist;
-  final String imageUrl;
-  final bool isLiked;
+  final Song song;
+  final CurrentIndexProvider currentIndexProvider;
+  final DataProvider dataProvider;
   final double progress; // 0.0 to 1.0
 
   const MiniPlayer({
     super.key,
-    required this.title,
-    required this.artist,
-    required this.imageUrl,
-    this.isLiked = false,
+    required this.song,
+    required this.currentIndexProvider,
+    required this.dataProvider,
     this.progress = 0.0,
   });
 
@@ -34,7 +35,7 @@ class MiniPlayer extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: Image.network(
-                  imageUrl,
+                  song.imageUrl,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -48,7 +49,7 @@ class MiniPlayer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      song.name,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -56,10 +57,8 @@ class MiniPlayer extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      artist,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                      ),
+                      song.artist,
+                      style: const TextStyle(color: Colors.white70),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -71,16 +70,12 @@ class MiniPlayer extends StatelessWidget {
               // Heart icon
               Icon(
                 Icons.favorite,
-                color: isLiked ? Colors.green : Colors.white70,
+                color: dataProvider.clickedPlaylist!.name.toLowerCase() =="liked songs" ? Colors.green : Colors.white70,
               ),
               const SizedBox(width: 12),
 
               // Play icon
-              const Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 28,
-              ),
+              const Icon(Icons.play_arrow, color: Colors.white, size: 28),
             ],
           ),
 
