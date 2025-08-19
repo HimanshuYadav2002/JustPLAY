@@ -96,6 +96,7 @@ class PlaylistPage extends StatelessWidget {
                         : null;
                     if (song == null) return SizedBox.shrink();
                     return SongTile(
+                      songIndex: songIndex!,
                       currentIndexProvider: currentIndexProvider,
                       dataProvider: dataProvider,
                       song: song,

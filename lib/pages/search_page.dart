@@ -71,8 +71,6 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -123,6 +121,9 @@ class _SearchPageState extends State<SearchPage> {
                     final song = songList[i];
 
                     return SongTile(
+                      songIndex: widget.dataProvider.songsList.indexWhere(
+                        (s) => s.id == song.id,
+                      ),
                       song: song,
                       currentIndexProvider: widget.currentIndexProvider,
                       dataProvider: widget.dataProvider,

@@ -7,10 +7,12 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class SongTile extends StatelessWidget {
   final Song? song;
+  final int songIndex;
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
   SongTile({
     super.key,
+    required this.songIndex,
     required this.song,
     required this.currentIndexProvider,
     required this.dataProvider,
@@ -30,8 +32,12 @@ class SongTile extends StatelessWidget {
     if (currentIndexProvider.currentIndex == 1) {
       return [
         IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.favorite, color: Colors.green, size: 30),
+          onPressed: () {
+            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+          },
+          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              : Icon(Icons.favorite_outline, size: 30),
         ),
 
         IconButton(
@@ -52,8 +58,14 @@ class SongTile extends StatelessWidget {
         "downloads") {
       return [
         IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.favorite, color: Colors.green, size: 30),
+          onPressed: () {
+            print("clicked");
+            print(song!.name);
+            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+          },
+          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              : Icon(Icons.favorite_outline, size: 30),
           color: Colors.white70,
         ),
         // Delete icon
@@ -67,8 +79,12 @@ class SongTile extends StatelessWidget {
         "liked songs") {
       return [
         IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.favorite, color: Colors.green, size: 30),
+          onPressed: () {
+            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+          },
+          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              : Icon(Icons.favorite_outline, size: 30),
         ),
 
         IconButton(
@@ -83,8 +99,12 @@ class SongTile extends StatelessWidget {
     } else {
       return [
         IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.favorite, color: Colors.green, size: 30),
+          onPressed: () {
+            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+          },
+          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              : Icon(Icons.favorite_outline, size: 30),
         ),
 
         IconButton(
