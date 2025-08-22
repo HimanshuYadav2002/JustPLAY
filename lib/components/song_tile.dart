@@ -3,14 +3,14 @@ import 'package:just_audio/just_audio.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/Providers/data_provider.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import '../streamUrlLogic/yt_audio_stream.dart';
 
 class SongTile extends StatelessWidget {
   final Song? song;
   final int songIndex;
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
-  SongTile({
+  const SongTile({
     super.key,
     required this.songIndex,
     required this.song,
@@ -18,14 +18,11 @@ class SongTile extends StatelessWidget {
     required this.dataProvider,
   });
 
-  final yt = YoutubeExplode();
-  final player = AudioPlayer();
-
-  Future<void> playAudio(Song video) async {
-    final manifest = await yt.videos.streamsClient.getManifest(video.id);
-    final audioInfo = manifest.audioOnly.withHighestBitrate();
-    await player.setUrl(audioInfo.url.toString());
-    await player.play();
+  Future<void> playAudio(Song song) async {
+    final player = AudioPlayer();
+    final audioSource = YouTubeAudioSource(videoId: song.id, quality: 'high');
+    await player.setAudioSource(audioSource);
+    player.play();
   }
 
   List<Widget> rightIcons(BuildContext context) {
@@ -59,8 +56,6 @@ class SongTile extends StatelessWidget {
       return [
         IconButton(
           onPressed: () {
-            print("clicked");
-            print(song!.name);
             dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
           },
           icon: dataProvider.likedSongs.songIndices.contains(songIndex)

@@ -177,7 +177,7 @@ packages:
     source: hosted
     version: "0.15.6"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: bb2ce4590bc2667c96f318d68cac1b5a7987ec819351d32b1c987239a815e007
@@ -568,11 +568,12 @@ packages:
   youtube_explode_dart:
     dependency: "direct main"
     description:
-      name: youtube_explode_dart
-      sha256: "9ff345caf8351c59eb1b7560837f761e08d2beaea3b4187637942715a31a6f58"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.5.2"
+      path: "."
+      ref: HEAD
+      resolved-ref: "0dc55140e1db65a717808c1f4a8fdacfc671a9fe"
+      url: "https://github.com/sheikhhaziq/youtube_explode_dart.git"
+    source: git
+    version: "2.4.1"
 sdks:
   dart: ">=3.8.1 <4.0.0"
   flutter: ">=3.27.0"

@@ -1,6 +1,6 @@
 name: music_app
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -10,10 +10,13 @@ dependencies:
   flutter:
     sdk: flutter
   just_audio: ^0.10.4
-  youtube_explode_dart: ^2.5.2
+  youtube_explode_dart:
+    git:
+      url: https://github.com/sheikhhaziq/youtube_explode_dart.git
   google_fonts: ^5.0.0
   provider: ^6.1.5
   dart_ytmusic_api: ^1.2.1
+  http: ^1.5.0
 
 dev_dependencies:
   flutter_test:
