@@ -3,7 +3,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/Providers/data_provider.dart';
-import '../streamUrlLogic/yt_audio_stream.dart';
+import '../Streaming_Logic/yt_audio_stream.dart';
 
 class SongTile extends StatelessWidget {
   final Song? song;
@@ -20,7 +20,7 @@ class SongTile extends StatelessWidget {
 
   Future<void> playAudio(Song song) async {
     final player = AudioPlayer();
-    final audioSource = YouTubeAudioSource(videoId: song.id, quality: 'high');
+    final audioSource = YouTubeAudioSource(videoId: song.id);
     await player.setAudioSource(audioSource);
     player.play();
   }

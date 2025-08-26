@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class AudioStreamClient {
+class YouTubeAudioSource extends StreamAudioSource {
+  final String videoId;
+  final YoutubeExplode ytExplode = YoutubeExplode();
   final http.Client _httpClient = http.Client();
-
-  AudioStreamClient();
   static const Map<String, String> _defaultHeaders = {
     'user-agent':
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
@@ -22,9 +23,49 @@ class AudioStreamClient {
     'upgrade-insecure-requests': '1',
   };
 
-  Stream<List<int>> getAudioStream(streamInfo,
-          {required int start, required int end}) =>
-      _getStream(streamInfo, streamClient: this, start: start, end: end);
+  YouTubeAudioSource({required this.videoId, super.tag});
+
+  // function used by just audio 
+  @override
+  Future<StreamAudioResponse> request([int? start, int? end]) async {
+    try {
+      final manifest = await ytExplode.videos.streams.getManifest(
+        videoId,
+        requireWatchPage: true,
+        ytClients: [YoutubeApiClient.androidVr],
+      );
+      final audioStream = manifest.audioOnly.withHighestBitrate();
+
+      start ??= 0;
+      end ??= (audioStream.isThrottled
+          ? (end ?? (start + 10379935))
+          : audioStream.size.totalBytes);
+      if (end > audioStream.size.totalBytes) {
+        end = audioStream.size.totalBytes;
+      }
+
+      // here we fetch real stream from url of streaminfo
+      final stream = getAudioStream(audioStream, start: start, end: end);
+      return StreamAudioResponse(
+        sourceLength: audioStream.size.totalBytes,
+        contentLength: end - start,
+        offset: start,
+        stream: stream,
+        contentType: audioStream.codec.mimeType,
+      );
+    } catch (e) {
+      throw Exception('Failed to load audio: $e');
+    }
+  }
+
+  
+
+  // real function to fetch audio stream from url in streaminfo
+  Stream<List<int>> getAudioStream(
+    streamInfo, {
+    required int start,
+    required int end,
+  }) => _getStream(streamInfo, start: start, end: end);
 
   Stream<List<int>> _getStream(
     StreamInfo streamInfo, {
@@ -33,13 +74,12 @@ class AudioStreamClient {
     required int start,
     required int end,
     int errorCount = 0,
-    required AudioStreamClient streamClient,
   }) async* {
     var url = streamInfo.url;
     var bytesCount = start;
     while (bytesCount != end) {
       try {
-        final response = await retry(this, () async {
+        final response = await retry(() async {
           final from = bytesCount;
           final to = end - 1;
 
@@ -48,10 +88,9 @@ class AudioStreamClient {
             request = http.Request('get', url);
             request.headers['Range'] = 'bytes=$from-$to';
           } else {
-            url = url.replace(queryParameters: {
-              ...url.queryParameters,
-              'range': '$from-$to'
-            });
+            url = url.replace(
+              queryParameters: {...url.queryParameters, 'range': '$from-$to'},
+            );
             request = http.Request('get', url);
           }
           return send(request);
@@ -84,7 +123,6 @@ class AudioStreamClient {
         await Future.delayed(const Duration(milliseconds: 500));
         yield* _getStream(
           streamInfo,
-          streamClient: streamClient,
           headers: headers,
           validate: validate,
           start: bytesCount,
@@ -117,10 +155,7 @@ class AudioStreamClient {
     }
   }
 
-  Future<T> retry<T>(
-    AudioStreamClient? client,
-    FutureOr<T> Function() function,
-  ) async {
+  Future<T> retry<T>(FutureOr<T> Function() function) async {
     var retryCount = 5;
 
     // ignore: literal_only_boolean_expressions
