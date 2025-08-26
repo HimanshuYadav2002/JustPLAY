@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:music_app/Streaming_Logic/yt_audio_stream.dart';
 import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
 
@@ -70,6 +72,23 @@ class DataProvider with ChangeNotifier {
 
     playlist.songIndices.remove(songIndex);
 
+    notifyListeners();
+  }
+
+  final _musicPlayer = AudioPlayer();
+  AudioPlayer get musicPlayer => _musicPlayer;
+
+  Future<void> playAudio(Song song) async {
+    _musicPlayer.stop();
+    _musicPlayer.clearAudioSources();
+    final audioSource = YouTubeAudioSource(videoId: song.id);
+    await _musicPlayer.setAudioSource(audioSource);
+    togglePlayPause();
+    _musicPlayer.play();
+  }
+
+  void togglePlayPause() {
+    _musicPlayer.playing ? _musicPlayer.pause() : _musicPlayer.play();
     notifyListeners();
   }
 }

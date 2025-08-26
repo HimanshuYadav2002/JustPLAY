@@ -18,13 +18,6 @@ class SongTile extends StatelessWidget {
     required this.dataProvider,
   });
 
-  Future<void> playAudio(Song song) async {
-    final player = AudioPlayer();
-    final audioSource = YouTubeAudioSource(videoId: song.id);
-    await player.setAudioSource(audioSource);
-    player.play();
-  }
-
   List<Widget> rightIcons(BuildContext context) {
     if (currentIndexProvider.currentIndex == 1) {
       return [
@@ -123,7 +116,7 @@ class SongTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        playAudio(song!);
+        dataProvider.playAudio(song!);
         dataProvider.setClickedSong(song);
       },
       child: Row(

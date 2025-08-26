@@ -1,3 +1,4 @@
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
@@ -8,7 +9,6 @@ class MiniPlayer extends StatelessWidget {
   final Song song;
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
-  final double progress; // 0.0 to 1.0
 
   const MiniPlayer({
     super.key,
@@ -16,7 +16,6 @@ class MiniPlayer extends StatelessWidget {
     required this.song,
     required this.currentIndexProvider,
     required this.dataProvider,
-    this.progress = 0.0,
   });
 
   @override
@@ -67,8 +66,6 @@ class MiniPlayer extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(width: 8),
-
               // Heart icon
               IconButton(
                 onPressed: () {
@@ -78,21 +75,43 @@ class MiniPlayer extends StatelessWidget {
                     ? Icon(Icons.favorite, color: Colors.green, size: 30)
                     : Icon(Icons.favorite_outline, size: 30),
               ),
-              const SizedBox(width: 12),
+
+              IconButton(
+                onPressed: () {
+                  dataProvider.togglePlayPause();
+                },
+                icon: dataProvider.musicPlayer.playing
+                    ? Icon(Icons.pause, color: Colors.white, size: 28)
+                    : Icon(Icons.play_arrow, color: Colors.white, size: 28),
+              ),
 
               // Play icon
-              const Icon(Icons.play_arrow, color: Colors.white, size: 28),
             ],
           ),
 
           const SizedBox(height: 8),
 
-          // Progress bar
-          LinearProgressIndicator(
-            value: progress,
-            minHeight: 3,
-            backgroundColor: Colors.white24,
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+          StreamBuilder<Duration>(
+            stream: dataProvider.musicPlayer.positionStream,
+            builder: (context, snapshot) {
+              final position = snapshot.data ?? Duration.zero;
+              final duration =
+                  dataProvider.musicPlayer.duration ?? Duration.zero;
+              final buffered =
+                  dataProvider.musicPlayer.bufferedPosition ?? Duration.zero;
+
+              return ProgressBar(
+                thumbRadius: 5,
+                timeLabelType: TimeLabelType.remainingTime,
+                timeLabelLocation: TimeLabelLocation.none,
+                progress: position,
+                buffered: buffered,
+                total: duration,
+                onSeek: (newPosition) {
+                  dataProvider.musicPlayer.seek(newPosition);
+                },
+              );
+            },
           ),
         ],
       ),
