@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
-import 'package:music_app/components/mini_player.dart';
 import 'package:music_app/components/song_tile.dart';
 
 class PlaylistPage extends StatelessWidget {
@@ -104,13 +103,6 @@ class PlaylistPage extends StatelessWidget {
                 ),
               ),
             ),
-            (dataProvider.clickedSong != null)
-                ? MiniPlayer(
-                    song: dataProvider.clickedSong!,
-                    currentIndexProvider: currentIndexProvider,
-                    dataProvider: dataProvider,
-                  )
-                : SizedBox(),
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
+import 'package:music_app/components/mini_player.dart';
 import 'package:music_app/pages/playlist_page.dart';
 import 'package:provider/provider.dart';
 import 'pages/search_page.dart';
@@ -77,7 +78,24 @@ class JustPLAY extends StatelessWidget {
           ),
         ),
         child: Scaffold(
-          body: pages[currentIndexProvider.navigationCurrentIndex],
+          body: Column(
+            
+            children: [
+              Expanded(
+                child: pages[currentIndexProvider.navigationCurrentIndex],
+              ),
+              (dataProvider.clickedSong != null)
+                  ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MiniPlayer(
+                        song: dataProvider.clickedSong!,
+                        currentIndexProvider: currentIndexProvider,
+                        dataProvider: dataProvider,
+                      ),
+                  )
+                  : SizedBox(),
+            ],
+          ),
           bottomNavigationBar: BottomNavigationBar(
             onTap: (index) {
               if (index == 2) {

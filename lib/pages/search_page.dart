@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
-import 'package:music_app/components/mini_player.dart';
 import 'package:music_app/components/song_tile.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -129,13 +128,6 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
-            (widget.dataProvider.clickedSong != null)
-                ? MiniPlayer(
-                    song: widget.dataProvider.clickedSong!,
-                    currentIndexProvider: widget.currentIndexProvider,
-                    dataProvider: widget.dataProvider,
-                  )
-                : SizedBox(),
           ],
         ),
       ),
