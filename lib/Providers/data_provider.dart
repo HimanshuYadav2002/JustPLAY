@@ -108,4 +108,12 @@ class DataProvider with ChangeNotifier {
     _musicPlayer.playing ? _musicPlayer.pause() : _musicPlayer.play();
     notifyListeners();
   }
+
+  late final Song _selctedSongtoAddToPlaylist;
+  Song get selctedSongtoAddToPlaylist => _selctedSongtoAddToPlaylist;
+
+  void setSelctedSongtoAddToPlaylist(Song song) {
+    _selctedSongtoAddToPlaylist = song;
+    notifyListeners();
+  }
 }

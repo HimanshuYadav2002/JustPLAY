@@ -1,6 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
+import 'package:music_app/components/add_song_to_custom_playlist_tile.dart';
 import 'package:music_app/components/song_tile.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -29,7 +31,13 @@ class _SearchPageState extends State<SearchPage> {
   List<Video> results = [];
   List<Song> songList = [];
   bool isLoading = false;
-  String? currentlyPlayingId;
+  bool addToCustomPlaylistButtonClicked = false;
+
+  void toggleAddToCustomPlaylistButtonClicked() {
+    setState(() {
+      addToCustomPlaylistButtonClicked = !addToCustomPlaylistButtonClicked;
+    });
+  }
 
   @override
   void initState() {
@@ -75,59 +83,128 @@ class _SearchPageState extends State<SearchPage> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Center(
-              child: Text(
-                'Search',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text(
+                    'Search',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // search field look
-            TextField(
-              controller: searchController,
-              onSubmitted: searchSongs,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Song , Artist , Album",
-                hintStyle: TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.white10,
-                suffixIcon: Icon(Icons.search, color: Colors.white70, size: 30),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
+                const SizedBox(height: 20),
+                // search field look
+                TextField(
+                  controller: searchController,
+                  onSubmitted: searchSongs,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Song , Artist , Album",
+                    hintStyle: TextStyle(color: Colors.white70),
+                    filled: true,
+                    fillColor: Colors.white10,
+                    suffixIcon: Icon(
+                      Icons.search,
+                      color: Colors.white70,
+                      size: 30,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (isLoading)
-              Expanded(child: Center(child: const CircularProgressIndicator())),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: ListView.separated(
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                  itemCount: songList.length,
-                  itemBuilder: (context, i) {
-                    final song = songList[i];
+                const SizedBox(height: 10),
+                if (isLoading)
+                  Expanded(
+                    child: Center(child: const CircularProgressIndicator()),
+                  ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
+                      itemCount: songList.length,
+                      itemBuilder: (context, i) {
+                        final song = songList[i];
 
-                    return SongTile(
-                      song: song,
-                      currentIndexProvider: widget.currentIndexProvider,
-                      dataProvider: widget.dataProvider,
-                    );
-                  },
+                        return SongTile(
+                          song: song,
+                          currentIndexProvider: widget.currentIndexProvider,
+                          dataProvider: widget.dataProvider,
+                          toggleAddToCustomPlaylistButtonClicked:
+                              toggleAddToCustomPlaylistButtonClicked,
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
+            (addToCustomPlaylistButtonClicked
+                ? BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(25),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              'Add to Playlist',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Expanded(
+                            child: ListView.separated(
+                              itemBuilder: (context, index) {
+                                final playlist = widget
+                                    .dataProvider
+                                    .customPlaylists
+                                    .values
+                                    .toList()[index];
+                                return AddToPlaylistTile(
+                                  song: widget
+                                      .dataProvider
+                                      .selctedSongtoAddToPlaylist,
+                                  playlist: playlist,
+                                  currentIndexProvider:
+                                      widget.currentIndexProvider,
+                                  dataProvider: widget.dataProvider,
+                                  toggleAddToCustomPlaylistButtonClicked:
+                                      toggleAddToCustomPlaylistButtonClicked,
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 12),
+                              itemCount: widget
+                                  .dataProvider
+                                  .customPlaylists
+                                  .values
+                                  .toList()
+                                  .length,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox()),
           ],
         ),
       ),

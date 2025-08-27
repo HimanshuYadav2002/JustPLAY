@@ -5,11 +5,12 @@ import 'package:music_app/Providers/data_provider.dart';
 
 class SongTile extends StatelessWidget {
   final Song? song;
-
+  final VoidCallback? toggleAddToCustomPlaylistButtonClicked;
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
   const SongTile({
     super.key,
+    this.toggleAddToCustomPlaylistButtonClicked,
     required this.song,
     required this.currentIndexProvider,
     required this.dataProvider,
@@ -37,7 +38,10 @@ class SongTile extends StatelessWidget {
         ),
 
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            toggleAddToCustomPlaylistButtonClicked!();
+            dataProvider.setSelctedSongtoAddToPlaylist(song!);
+          },
           icon: Icon(Icons.add, color: Colors.white, size: 30),
         ),
       ];
@@ -102,7 +106,12 @@ class SongTile extends StatelessWidget {
         ),
 
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            dataProvider.removeFromPlaylist(
+              dataProvider.clickedPlaylist!,
+              song!,
+            );
+          },
           icon: Icon(Icons.close, color: Colors.red, size: 30),
         ),
       ];
