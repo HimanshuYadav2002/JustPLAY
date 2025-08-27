@@ -24,6 +24,25 @@ class DataProvider with ChangeNotifier {
   Playlist get downloads => _downloads;
   Playlist get likedSongs => _likedSongs;
 
+  void toggleLikedsong(Song song) {
+    if (_likedSongs.songKeySet.contains(song.id)) {
+      _likedSongs.songKeys.remove(song.id);
+      _likedSongs.songKeySet.remove(song.id);
+      notifyListeners();
+    } else {
+      if (_songsList.containsKey(song.id)) {
+        _likedSongs.songKeys.add(song.id);
+        _likedSongs.songKeySet.add(song.id);
+        notifyListeners();
+      } else {
+        _songsList[song.id] = song;
+        _likedSongs.songKeys.add(song.id);
+        _likedSongs.songKeySet.add(song.id);
+        notifyListeners();
+      }
+    }
+  }
+
   Playlist? _clickedPlaylist;
   Song? _clickedSong;
 

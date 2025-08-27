@@ -67,7 +67,7 @@ class MiniPlayer extends StatelessWidget {
               // Heart icon
               IconButton(
                 onPressed: () {
-                  dataProvider.addToPlaylist(dataProvider.likedSongs, song);
+                  dataProvider.toggleLikedsong(song);
                 },
                 icon: dataProvider.likedSongs.songKeySet.contains(song.id)
                     ? Icon(Icons.favorite, color: Colors.green, size: 30)

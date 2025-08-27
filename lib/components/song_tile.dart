@@ -5,7 +5,7 @@ import 'package:music_app/Providers/data_provider.dart';
 
 class SongTile extends StatelessWidget {
   final Song? song;
-  
+
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
   const SongTile({
@@ -20,7 +20,7 @@ class SongTile extends StatelessWidget {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+            dataProvider.toggleLikedsong(song!);
           },
           icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
@@ -46,7 +46,7 @@ class SongTile extends StatelessWidget {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+            dataProvider.toggleLikedsong(song!);
           },
           icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
@@ -65,7 +65,7 @@ class SongTile extends StatelessWidget {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+            dataProvider.toggleLikedsong(song!);
           },
           icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
@@ -85,7 +85,7 @@ class SongTile extends StatelessWidget {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
+            dataProvider.toggleLikedsong(song!);
           },
           icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
