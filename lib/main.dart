@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
-import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/pages/playlist_page.dart';
 import 'package:provider/provider.dart';
 import 'pages/search_page.dart';
@@ -83,10 +82,6 @@ class JustPLAY extends StatelessWidget {
             onTap: (index) {
               if (index == 2) {
                 dataProvider.setClickedPlaylist(dataProvider.downloads);
-              } else {
-                dataProvider.setClickedPlaylist(
-                  Playlist(name: "name", imageUrl: "imageUrl", songIndices: []),
-                );
               }
               currentIndexProvider.setCurrentIndex(index);
               currentIndexProvider.setNavigationIndex(index);

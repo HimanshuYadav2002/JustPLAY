@@ -86,17 +86,14 @@ class PlaylistPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: ListView.separated(
-                  itemCount:
-                      dataProvider.clickedPlaylist?.songIndices.length ?? 0,
+                  itemCount: dataProvider.clickedPlaylist?.songKeys.length ?? 0,
                   itemBuilder: (context, index) {
-                    final songIndex =
-                        dataProvider.clickedPlaylist?.songIndices[index];
-                    final song = songIndex != null
-                        ? dataProvider.songsList[songIndex]
-                        : null;
+                    final song =
+                        dataProvider.songsList[dataProvider
+                            .clickedPlaylist
+                            ?.songKeys[index]];
                     if (song == null) return SizedBox.shrink();
                     return SongTile(
-                      songIndex: songIndex!,
                       currentIndexProvider: currentIndexProvider,
                       dataProvider: dataProvider,
                       song: song,
@@ -108,10 +105,7 @@ class PlaylistPage extends StatelessWidget {
               ),
             ),
             (dataProvider.clickedSong != null)
-                ?  MiniPlayer(
-                    songIndex: dataProvider.songsList.indexWhere(
-                      (s) => s.id == dataProvider.clickedSong!.id,
-                    ),
+                ? MiniPlayer(
                     song: dataProvider.clickedSong!,
                     currentIndexProvider: currentIndexProvider,
                     dataProvider: dataProvider,

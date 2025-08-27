@@ -5,14 +5,12 @@ import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/models/song_model.dart';
 
 class MiniPlayer extends StatelessWidget {
-  final int songIndex;
   final Song song;
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
 
   const MiniPlayer({
     super.key,
-    required this.songIndex,
     required this.song,
     required this.currentIndexProvider,
     required this.dataProvider,
@@ -71,7 +69,7 @@ class MiniPlayer extends StatelessWidget {
                 onPressed: () {
                   dataProvider.addToPlaylist(dataProvider.likedSongs, song);
                 },
-                icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+                icon: dataProvider.likedSongs.songKeySet.contains(song.id)
                     ? Icon(Icons.favorite, color: Colors.green, size: 30)
                     : Icon(Icons.favorite_outline, size: 30),
               ),
@@ -98,7 +96,7 @@ class MiniPlayer extends StatelessWidget {
               final duration =
                   dataProvider.musicPlayer.duration ?? Duration.zero;
               final buffered =
-                  dataProvider.musicPlayer.bufferedPosition ?? Duration.zero;
+                  dataProvider.musicPlayer.bufferedPosition;
 
               return ProgressBar(
                 thumbRadius: 5,

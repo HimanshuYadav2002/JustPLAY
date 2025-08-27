@@ -51,7 +51,7 @@ class PlaylistTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   // Example: show number of songs as subtitle
-                  '${playlist.songIndices.length} songs',
+                  '${playlist.songKeys.length} songs',
                   style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],

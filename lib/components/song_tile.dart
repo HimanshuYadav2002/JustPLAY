@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/Providers/data_provider.dart';
-import '../Streaming_Logic/yt_audio_stream.dart';
 
 class SongTile extends StatelessWidget {
   final Song? song;
-  final int songIndex;
+  
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
   const SongTile({
     super.key,
-    required this.songIndex,
     required this.song,
     required this.currentIndexProvider,
     required this.dataProvider,
@@ -25,7 +22,7 @@ class SongTile extends StatelessWidget {
           onPressed: () {
             dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
           },
-          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+          icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
         ),
@@ -51,7 +48,7 @@ class SongTile extends StatelessWidget {
           onPressed: () {
             dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
           },
-          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+          icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
           color: Colors.white70,
@@ -70,7 +67,7 @@ class SongTile extends StatelessWidget {
           onPressed: () {
             dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
           },
-          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+          icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
         ),
@@ -90,7 +87,7 @@ class SongTile extends StatelessWidget {
           onPressed: () {
             dataProvider.addToPlaylist(dataProvider.likedSongs, song!);
           },
-          icon: dataProvider.likedSongs.songIndices.contains(songIndex)
+          icon: dataProvider.likedSongs.songKeySet.contains(song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
         ),

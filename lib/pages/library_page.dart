@@ -67,9 +67,6 @@ class LibraryPage extends StatelessWidget {
             ),
             (dataProvider.clickedSong != null)
                 ? MiniPlayer(
-                    songIndex: dataProvider.songsList.indexWhere(
-                      (s) => s.id == dataProvider.clickedSong!.id,
-                    ),
                     song: dataProvider.clickedSong!,
                     currentIndexProvider: currentIndexProvider,
                     dataProvider: dataProvider,
