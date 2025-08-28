@@ -109,8 +109,8 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  late final Song _selctedSongtoAddToPlaylist;
-  Song get selctedSongtoAddToPlaylist => _selctedSongtoAddToPlaylist;
+  Song? _selctedSongtoAddToPlaylist;
+  Song? get selctedSongtoAddToPlaylist => _selctedSongtoAddToPlaylist;
 
   void setSelctedSongtoAddToPlaylist(Song song) {
     _selctedSongtoAddToPlaylist = song;

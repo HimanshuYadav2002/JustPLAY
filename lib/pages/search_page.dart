@@ -181,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
                                 return AddToPlaylistTile(
                                   song: widget
                                       .dataProvider
-                                      .selctedSongtoAddToPlaylist,
+                                      .selctedSongtoAddToPlaylist!,
                                   playlist: playlist,
                                   currentIndexProvider:
                                       widget.currentIndexProvider,
