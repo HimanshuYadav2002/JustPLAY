@@ -87,11 +87,9 @@ class PlaylistPage extends StatelessWidget {
                 child: ListView.separated(
                   itemCount: dataProvider.clickedPlaylist?.songKeys.length ?? 0,
                   itemBuilder: (context, index) {
-                    final song =
-                        dataProvider.songsList[dataProvider
-                            .clickedPlaylist
-                            ?.songKeys[index]];
-                    if (song == null) return SizedBox.shrink();
+                    final song = dataProvider.getSongById(
+                      dataProvider.clickedPlaylist?.songKeys[index],
+                    );
                     return SongTile(
                       currentIndexProvider: currentIndexProvider,
                       dataProvider: dataProvider,

@@ -6,7 +6,10 @@ import 'package:music_app/models/song_model.dart';
 
 class DataProvider with ChangeNotifier {
   final Map<String, Song> _songsList = {};
-  Map<String, Song> get songsList => _songsList;
+
+  Song? getSongById(String? id) {
+    return _songsList[id];
+  }
 
   final Playlist _likedSongs = Playlist(
     name: "Liked Songs",
@@ -21,8 +24,13 @@ class DataProvider with ChangeNotifier {
     songKeys: [],
   );
 
-  Playlist get downloads => _downloads;
-  Playlist get likedSongs => _likedSongs;
+  bool isSongLiked(String songID) {
+    return _likedSongs.songKeySet.contains(songID);
+  }
+
+  bool isSongDownloaded(String songID) {
+    return _downloads.songKeySet.contains(songID);
+  }
 
   void toggleLikedsong(Song song) {
     if (_likedSongs.songKeySet.contains(song.id)) {
@@ -54,6 +62,11 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setClickedPlaylistToDownloads() {
+    _clickedPlaylist = _downloads;
+    notifyListeners();
+  }
+
   void setClickedSong(Song? song) {
     _clickedSong = song;
     notifyListeners();
@@ -73,8 +86,9 @@ class DataProvider with ChangeNotifier {
     return [_likedSongs, ..._customPlaylists.values];
   }
 
+  // this function is mainly used to add songs to custom playlist
   void addToPlaylist(Playlist playlist, Song song) {
-    if (!songsList.containsKey(song.id)) {
+    if (!_songsList.containsKey(song.id)) {
       _songsList[song.id] = song;
       playlist.songKeys.add(song.id);
       playlist.songKeySet.add(song.id);
@@ -86,6 +100,7 @@ class DataProvider with ChangeNotifier {
     }
   }
 
+  // this function is mainly used to remove songs to custom playlist
   void removeFromPlaylist(Playlist playlist, Song song) {
     playlist.songKeys.remove(song.id);
     playlist.songKeySet.remove(song.id);

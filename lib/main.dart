@@ -99,7 +99,7 @@ class JustPLAY extends StatelessWidget {
           bottomNavigationBar: BottomNavigationBar(
             onTap: (index) {
               if (index == 2) {
-                dataProvider.setClickedPlaylist(dataProvider.downloads);
+                dataProvider.setClickedPlaylistToDownloads();
               }
               currentIndexProvider.setCurrentIndex(index);
               currentIndexProvider.setNavigationIndex(index);

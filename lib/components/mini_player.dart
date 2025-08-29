@@ -69,7 +69,7 @@ class MiniPlayer extends StatelessWidget {
                 onPressed: () {
                   dataProvider.toggleLikedsong(song);
                 },
-                icon: dataProvider.likedSongs.songKeySet.contains(song.id)
+                icon: dataProvider.isSongLiked(song.id)
                     ? Icon(Icons.favorite, color: Colors.green, size: 30)
                     : Icon(Icons.favorite_outline, size: 30),
               ),
