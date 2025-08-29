@@ -51,7 +51,7 @@ class LibraryPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8),
                 child: ListView.separated(
                   itemBuilder: (context, index) {
-                    final playlist = dataProvider.allPlaylists()[index];
+                    final playlist = dataProvider.playlistsExcludingDownloads()[index];
                     return PlaylistTile(
                       playlist: playlist,
                       currentIndexProvider: currentIndexProvider,
@@ -60,7 +60,7 @@ class LibraryPage extends StatelessWidget {
                   },
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 12),
-                  itemCount: dataProvider.allPlaylists().length,
+                  itemCount: dataProvider.playlistsExcludingDownloads().length,
                 ),
               ),
             ),

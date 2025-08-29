@@ -175,9 +175,7 @@ class _SearchPageState extends State<SearchPage> {
                               itemBuilder: (context, index) {
                                 final playlist = widget
                                     .dataProvider
-                                    .customPlaylists
-                                    .values
-                                    .toList()[index];
+                                    .playlistsExcludingLikedAndDownloads()[index];
                                 return AddToPlaylistTile(
                                   song: widget
                                       .dataProvider
@@ -194,9 +192,7 @@ class _SearchPageState extends State<SearchPage> {
                                   const SizedBox(height: 12),
                               itemCount: widget
                                   .dataProvider
-                                  .customPlaylists
-                                  .values
-                                  .toList()
+                                  .playlistsExcludingLikedAndDownloads()
                                   .length,
                             ),
                           ),

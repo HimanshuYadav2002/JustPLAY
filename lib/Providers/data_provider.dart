@@ -11,41 +11,28 @@ class DataProvider with ChangeNotifier {
     return _songsList[id];
   }
 
-  final Playlist _likedSongs = Playlist(
-    name: "Liked Songs",
-    imageUrl:
-        "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
-    songKeys: [],
-  );
-  final Playlist _downloads = Playlist(
-    name: "Downloads",
-    imageUrl:
-        "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
-    songKeys: [],
-  );
-
   bool isSongLiked(String songID) {
-    return _likedSongs.songKeySet.contains(songID);
+    return _playlists["Liked Songs"]!.songKeySet.contains(songID);
   }
 
   bool isSongDownloaded(String songID) {
-    return _downloads.songKeySet.contains(songID);
+    return _playlists["Downloads"]!.songKeySet.contains(songID);
   }
 
   void toggleLikedsong(Song song) {
-    if (_likedSongs.songKeySet.contains(song.id)) {
-      _likedSongs.songKeys.remove(song.id);
-      _likedSongs.songKeySet.remove(song.id);
+    if (_playlists["Liked Songs"]!.songKeySet.contains(song.id)) {
+      _playlists["Liked Songs"]!.songKeys.remove(song.id);
+      _playlists["Liked Songs"]!.songKeySet.remove(song.id);
       notifyListeners();
     } else {
       if (_songsList.containsKey(song.id)) {
-        _likedSongs.songKeys.add(song.id);
-        _likedSongs.songKeySet.add(song.id);
+        _playlists["Liked Songs"]!.songKeys.add(song.id);
+        _playlists["Liked Songs"]!.songKeySet.add(song.id);
         notifyListeners();
       } else {
         _songsList[song.id] = song;
-        _likedSongs.songKeys.add(song.id);
-        _likedSongs.songKeySet.add(song.id);
+        _playlists["Liked Songs"]!.songKeys.add(song.id);
+        _playlists["Liked Songs"]!.songKeySet.add(song.id);
         notifyListeners();
       }
     }
@@ -63,7 +50,7 @@ class DataProvider with ChangeNotifier {
   }
 
   void setClickedPlaylistToDownloads() {
-    _clickedPlaylist = _downloads;
+    _clickedPlaylist = _playlists["Downloads"];
     notifyListeners();
   }
 
@@ -72,7 +59,17 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  final Map<String, Playlist> _customPlaylists = {
+  final Map<String, Playlist> _playlists = {
+    "Liked Songs": Playlist(
+      name: "Liked Songs",
+      imageUrl:
+          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
+    ),
+    "Downloads": Playlist(
+      name: "Downloads",
+      imageUrl:
+          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
+    ),
     "Gym Playlist": Playlist(
       name: "Gym Playlist",
       imageUrl:
@@ -80,10 +77,19 @@ class DataProvider with ChangeNotifier {
       songKeys: [],
     ),
   };
-  Map<String, Playlist> get customPlaylists => _customPlaylists;
+  Map<String, Playlist> get playlists => _playlists;
 
-  List<Playlist> allPlaylists() {
-    return [_likedSongs, ..._customPlaylists.values];
+  List<Playlist> playlistsExcludingDownloads() {
+    final playlistsCopy = Map.of(_playlists);
+    playlistsCopy.remove("Downloads");
+    return playlistsCopy.values.toList();
+  }
+
+  List<Playlist> playlistsExcludingLikedAndDownloads() {
+    final playlistsCopy = Map.of(_playlists);
+    playlistsCopy.remove("Liked Songs");
+    playlistsCopy.remove("Downloads");
+    return playlistsCopy.values.toList();
   }
 
   // this function is mainly used to add songs to custom playlist
