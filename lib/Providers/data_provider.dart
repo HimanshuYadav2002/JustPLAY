@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_app/Database/database.dart';
 import 'package:music_app/Streaming_Logic/yt_audio_stream.dart';
 import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
 
 class DataProvider with ChangeNotifier {
   final Map<String, Song> _songsList = {};
+
+  void loadSongsFromDB() async {
+    Isar db = await Database.instance;
+    final allDbSongs = await db.songs.where().findAll();
+    _songsList.clear();
+    if (allDbSongs.isNotEmpty) {
+      for (var song in allDbSongs) {
+        _songsList[song.id] = song;
+      }
+      notifyListeners();
+    }
+  }
 
   Song? getSongById(String? id) {
     return _songsList[id];
@@ -33,6 +47,8 @@ class DataProvider with ChangeNotifier {
         _songsList[song.id] = song;
         _playlists["Liked Songs"]!.songKeys.add(song.id);
         _playlists["Liked Songs"]!.songKeySet.add(song.id);
+        Database.addSongtoDb(song);
+        Database.addSongtoDbPlaylist(_playlists["Liked Songs"]!, song);
         notifyListeners();
       }
     }
@@ -64,11 +80,13 @@ class DataProvider with ChangeNotifier {
       name: "Liked Songs",
       imageUrl:
           "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
+      songKeys: [],
     ),
     "Downloads": Playlist(
       name: "Downloads",
       imageUrl:
           "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
+      songKeys: [],
     ),
     "Gym Playlist": Playlist(
       name: "Gym Playlist",
@@ -78,6 +96,23 @@ class DataProvider with ChangeNotifier {
     ),
   };
   Map<String, Playlist> get playlists => _playlists;
+
+  void loadPlaylistfromDb() async {
+    Isar db = await Database.instance;
+    final allPlaylists = await db.playlists.where().findAll();
+    if (allPlaylists.isEmpty) {
+      db.writeTxn(() async {
+        await db.playlists.putAll(_playlists.values.toList());
+      });
+    } else {
+      final allDbPlaylists = await db.playlists.where().findAll();
+      _playlists.clear();
+      for (var playlist in allDbPlaylists) {
+        _playlists[playlist.name] = playlist;
+      }
+      notifyListeners();
+    }
+  }
 
   List<Playlist> playlistsExcludingDownloads() {
     final playlistsCopy = Map.of(_playlists);

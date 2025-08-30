@@ -62,7 +62,7 @@ class YouTubeAudioSource extends StreamAudioSource {
 
   // real function to fetch audio stream from url in streaminfo
   Stream<List<int>> getAudioStream(
-    streamInfo, {
+    StreamInfo streamInfo, {
     required int start,
     required int end,
   }) => _getStream(streamInfo, start: start, end: end);

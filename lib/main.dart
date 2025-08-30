@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:music_app/Database/database.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/components/mini_player.dart';
@@ -10,10 +11,13 @@ import 'pages/library_page.dart';
 import 'pages/music_player_page.dart';
 import 'package:flutter/services.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
+
+  await Database.instance;
 
   runApp(
     ChangeNotifierProvider(
@@ -33,6 +37,8 @@ class JustPLAY extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentIndexProvider = Provider.of<CurrentIndexProvider>(context);
     final dataProvider = Provider.of<DataProvider>(context);
+    dataProvider.loadSongsFromDB();
+    dataProvider.loadPlaylistfromDb();
     final pages = [
       LibraryPage(
         currentIndexProvider: currentIndexProvider,

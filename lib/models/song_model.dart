@@ -1,8 +1,17 @@
+import 'package:isar/isar.dart';
+
+part 'song_model.g.dart';
+
+/// SONG MODEL
+@collection
 class Song {
-  String id;
-  String name;
-  String artist;
-  String imageUrl;
+  Id isarId = Isar.autoIncrement; // internal Isar id
+
+  @Index(unique: true) // indexed song id for fast lookup
+  late String id;
+  late String name;
+  late String artist;
+  late String imageUrl;
   String? downloadPath;
 
   Song({
