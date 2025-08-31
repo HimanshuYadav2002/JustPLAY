@@ -37,36 +37,38 @@ class DataProvider with ChangeNotifier {
     if (_playlists["Liked Songs"]!.songKeySet.contains(song.id)) {
       _playlists["Liked Songs"]!.songKeys.remove(song.id);
       _playlists["Liked Songs"]!.songKeySet.remove(song.id);
+      Database.updateDbPlaylist(_playlists["Liked Songs"]!);
       notifyListeners();
     } else {
       if (_songsList.containsKey(song.id)) {
         _playlists["Liked Songs"]!.songKeys.add(song.id);
         _playlists["Liked Songs"]!.songKeySet.add(song.id);
+        Database.updateDbPlaylist(_playlists["Liked Songs"]!);
         notifyListeners();
       } else {
         _songsList[song.id] = song;
         _playlists["Liked Songs"]!.songKeys.add(song.id);
         _playlists["Liked Songs"]!.songKeySet.add(song.id);
         Database.addSongtoDb(song);
-        Database.addSongtoDbPlaylist(_playlists["Liked Songs"]!, song);
+        Database.updateDbPlaylist(_playlists["Liked Songs"]!);
         notifyListeners();
       }
     }
   }
 
-  Playlist? _clickedPlaylist;
+  String? _clickedPlaylist;
   Song? _clickedSong;
 
-  Playlist? get clickedPlaylist => _clickedPlaylist;
+  String? get clickedPlaylist => _clickedPlaylist;
   Song? get clickedSong => _clickedSong;
 
   void setClickedPlaylist(Playlist? playlist) {
-    _clickedPlaylist = playlist;
+    _clickedPlaylist = playlist?.name;
     notifyListeners();
   }
 
   void setClickedPlaylistToDownloads() {
-    _clickedPlaylist = _playlists["Downloads"];
+    _clickedPlaylist = "Downloads";
     notifyListeners();
   }
 
@@ -95,7 +97,10 @@ class DataProvider with ChangeNotifier {
       songKeys: [],
     ),
   };
-  Map<String, Playlist> get playlists => _playlists;
+
+  Playlist getplaylistsbyName(String name) {
+    return _playlists[name]!;
+  }
 
   void loadPlaylistfromDb() async {
     Isar db = await Database.instance;
@@ -133,10 +138,13 @@ class DataProvider with ChangeNotifier {
       _songsList[song.id] = song;
       playlist.songKeys.add(song.id);
       playlist.songKeySet.add(song.id);
+      Database.addSongtoDb(song);
+      Database.updateDbPlaylist(playlist);
       notifyListeners();
     } else if (!playlist.songKeySet.contains(song.id)) {
       playlist.songKeys.add(song.id);
       playlist.songKeySet.add(song.id);
+      Database.updateDbPlaylist(playlist);
       notifyListeners();
     }
   }
@@ -145,6 +153,7 @@ class DataProvider with ChangeNotifier {
   void removeFromPlaylist(Playlist playlist, Song song) {
     playlist.songKeys.remove(song.id);
     playlist.songKeySet.remove(song.id);
+    Database.updateDbPlaylist(playlist);
     notifyListeners();
   }
 

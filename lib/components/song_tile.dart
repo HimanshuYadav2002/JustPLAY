@@ -45,8 +45,7 @@ class SongTile extends StatelessWidget {
           icon: Icon(Icons.add, color: Colors.white, size: 30),
         ),
       ];
-    } else if (dataProvider.clickedPlaylist?.name.toLowerCase() ==
-        "downloads") {
+    } else if (dataProvider.clickedPlaylist?.toLowerCase() == "downloads") {
       return [
         IconButton(
           onPressed: () {
@@ -64,8 +63,7 @@ class SongTile extends StatelessWidget {
           color: Colors.white70,
         ),
       ];
-    } else if (dataProvider.clickedPlaylist?.name.toLowerCase() ==
-        "liked songs") {
+    } else if (dataProvider.clickedPlaylist?.toLowerCase() == "liked songs") {
       return [
         IconButton(
           onPressed: () {
@@ -108,7 +106,7 @@ class SongTile extends StatelessWidget {
         IconButton(
           onPressed: () {
             dataProvider.removeFromPlaylist(
-              dataProvider.clickedPlaylist!,
+              dataProvider.getplaylistsbyName(dataProvider.clickedPlaylist!),
               song!,
             );
           },

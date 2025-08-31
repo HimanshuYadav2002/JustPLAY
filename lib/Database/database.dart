@@ -20,11 +20,9 @@ class Database {
     });
   }
 
-  static void addSongtoDbPlaylist(Playlist playlist, Song song) async {
-    final targetPlaylist = await _isar?.playlists.getByName(playlist.name);
-    targetPlaylist!.songKeys.add(song.id);
+  static void updateDbPlaylist(Playlist playlist) async {
     await _isar?.writeTxn(() async {
-      await _isar?.playlists.put(targetPlaylist);
+      await _isar?.playlists.put(playlist);
     });
   }
 }

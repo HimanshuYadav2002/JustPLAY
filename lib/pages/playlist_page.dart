@@ -21,7 +21,7 @@ class PlaylistPage extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                dataProvider.clickedPlaylist!.name,
+                dataProvider.clickedPlaylist!,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 28,
@@ -40,7 +40,7 @@ class PlaylistPage extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText:
-                          "Find in ${dataProvider.clickedPlaylist?.name.toLowerCase() ?? ''}",
+                          "Find in ${dataProvider.clickedPlaylist?.toLowerCase() ?? ''}",
                       hintStyle: TextStyle(color: Colors.white70),
                       filled: true,
                       fillColor: Colors.white10,
@@ -85,10 +85,15 @@ class PlaylistPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: ListView.separated(
-                  itemCount: dataProvider.clickedPlaylist?.songKeys.length ?? 0,
+                  itemCount: dataProvider
+                      .getplaylistsbyName(dataProvider.clickedPlaylist!)
+                      .songKeys
+                      .length,
                   itemBuilder: (context, index) {
                     final song = dataProvider.getSongById(
-                      dataProvider.clickedPlaylist?.songKeys[index],
+                      dataProvider
+                          .getplaylistsbyName(dataProvider.clickedPlaylist!)
+                          .songKeys[index],
                     );
                     return SongTile(
                       currentIndexProvider: currentIndexProvider,
