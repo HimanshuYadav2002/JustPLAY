@@ -207,7 +207,7 @@ class DataProvider with ChangeNotifier {
   Future<void> playAudio(Song song) async {
     _musicPlayer.stop();
     _musicPlayer.clearAudioSources();
-    if (getSongById(song.id)?.downloadPath == "") {
+    if (song.downloadPath == "") {
       final audioSource = YoutubeAudioSource(videoId: song.id);
       await _musicPlayer.setAudioSource(audioSource);
     } else {

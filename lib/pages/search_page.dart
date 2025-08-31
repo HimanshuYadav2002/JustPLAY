@@ -133,7 +133,13 @@ class _SearchPageState extends State<SearchPage> {
                           const SizedBox(height: 12),
                       itemCount: songList.length,
                       itemBuilder: (context, i) {
-                        final song = songList[i];
+                        Song song = songList[i];
+                        if (widget.dataProvider
+                            .getplaylistsbyName("Downloads")
+                            .songKeySet
+                            .contains(song.id)) {
+                          song = widget.dataProvider.getSongById(song.id)!;
+                        }
 
                         return SongTile(
                           song: song,
