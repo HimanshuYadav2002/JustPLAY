@@ -111,11 +111,11 @@ Song _songDeserialize(
 ) {
   final object = Song(
     artist: reader.readString(offsets[0]),
-    downloadPath: reader.readStringOrNull(offsets[1]),
     id: reader.readString(offsets[2]),
     imageUrl: reader.readString(offsets[3]),
     name: reader.readString(offsets[4]),
   );
+  object.downloadPath = reader.readStringOrNull(offsets[1]);
   object.isarId = id;
   return object;
 }

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/Database/database.dart';
-import 'package:music_app/Streaming_Logic/yt_audio_stream.dart';
+import 'package:music_app/Streaming_Logic/youtube_audio_source.dart';
 import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
+import 'dart:io';
+import 'package:music_app/Streaming_Logic/core_streaming_functions.dart';
+import 'package:path/path.dart' as path;
 
 class DataProvider with ChangeNotifier {
   final Map<String, Song> _songsList = {};
@@ -21,7 +24,7 @@ class DataProvider with ChangeNotifier {
     }
   }
 
-  Song? getSongById(String? id) {
+  Song? getSongById(String id) {
     return _songsList[id];
   }
 
@@ -157,14 +160,62 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> downloadSong(Song song) async {
+    final CoreStreamingFunctions streamingFunctions = CoreStreamingFunctions();
+    try {
+      final streamInfo = await streamingFunctions.getStreamInfo(song.id);
+
+      int start = 0;
+      int end = streamInfo.size.totalBytes;
+
+      Stream<List<int>> stream = streamingFunctions.getStream(
+        streamInfo,
+        start: start,
+        end: end,
+      );
+
+      // Prepare save path
+      final dir = Directory('/storage/emulated/0/Download/JustPlay');
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
+      // Save file with .m4a extension
+      final filePath = path.join(dir.path, '${song.id}.m4a');
+      final file = File(filePath);
+
+      // Open write stream
+      var fileStream = file.openWrite();
+
+      // Pipe youtube stream → file
+      await stream.pipe(fileStream);
+
+      await fileStream.flush();
+      await fileStream.close();
+
+      addToPlaylist(getplaylistsbyName("Downloads"), song);
+      Song currentsong = getSongById(song.id)!;
+      currentsong.downloadPath = filePath;
+      Database.addSongtoDb(currentsong);
+      notifyListeners();
+    } catch (e) {}
+  }
+
   final _musicPlayer = AudioPlayer();
   AudioPlayer get musicPlayer => _musicPlayer;
 
   Future<void> playAudio(Song song) async {
     _musicPlayer.stop();
     _musicPlayer.clearAudioSources();
-    final audioSource = YouTubeAudioSource(videoId: song.id);
-    await _musicPlayer.setAudioSource(audioSource);
+    if (getSongById(song.id)?.downloadPath == "") {
+      final audioSource = YoutubeAudioSource(videoId: song.id);
+      await _musicPlayer.setAudioSource(audioSource);
+    } else {
+      _musicPlayer.setFilePath(getSongById(song.id)!.downloadPath ?? "");
+      for (var i = 0; i < 10; i++) {
+        print("playing by file ");
+      }
+    }
     togglePlayPause();
     _musicPlayer.play();
   }

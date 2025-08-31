@@ -1,11 +1,8 @@
 import 'dart:async';
-
 import 'package:http/http.dart' as http;
-import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class YouTubeAudioSource extends StreamAudioSource {
-  final String videoId;
+class CoreStreamingFunctions {
   final YoutubeExplode ytExplode = YoutubeExplode();
   final http.Client _httpClient = http.Client();
   static const Map<String, String> _defaultHeaders = {
@@ -23,45 +20,19 @@ class YouTubeAudioSource extends StreamAudioSource {
     'upgrade-insecure-requests': '1',
   };
 
-  YouTubeAudioSource({required this.videoId, super.tag});
-
-  // function used by just audio 
-  @override
-  Future<StreamAudioResponse> request([int? start, int? end]) async {
-    try {
-      final manifest = await ytExplode.videos.streams.getManifest(
-        videoId,
-        requireWatchPage: true,
-        ytClients: [YoutubeApiClient.androidVr],
-      );
-      final audioStream = manifest.audioOnly.withHighestBitrate();
-
-      start ??= 0;
-      end ??= (audioStream.isThrottled
-          ? (end ?? (start + 10379935))
-          : audioStream.size.totalBytes);
-      if (end > audioStream.size.totalBytes) {
-        end = audioStream.size.totalBytes;
-      }
-
-      // here we fetch real stream from url of streaminfo
-      final stream = getAudioStream(audioStream, start: start, end: end);
-      return StreamAudioResponse(
-        sourceLength: audioStream.size.totalBytes,
-        contentLength: end - start,
-        offset: start,
-        stream: stream,
-        contentType: audioStream.codec.mimeType,
-      );
-    } catch (e) {
-      throw Exception('Failed to load audio: $e');
-    }
+  // this function returns audiostream info
+  Future<StreamInfo> getStreamInfo(String videoId) async {
+    final manifest = await ytExplode.videos.streams.getManifest(
+      videoId,
+      requireWatchPage: true,
+      ytClients: [YoutubeApiClient.androidVr],
+    );
+    final audioStream = manifest.audioOnly.withHighestBitrate();
+    return audioStream;
   }
 
-  
-
   // real function to fetch audio stream from url in streaminfo
-  Stream<List<int>> getAudioStream(
+  Stream<List<int>> getStream(
     StreamInfo streamInfo, {
     required int start,
     required int end,

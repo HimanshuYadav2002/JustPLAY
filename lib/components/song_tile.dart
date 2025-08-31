@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:music_app/Database/database.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/Providers/data_provider.dart';
 
-class SongTile extends StatelessWidget {
+class SongTile extends StatefulWidget {
   final Song? song;
   final VoidCallback? toggleAddToCustomPlaylistButtonClicked;
   final CurrentIndexProvider currentIndexProvider;
   final DataProvider dataProvider;
+
   const SongTile({
     super.key,
     this.toggleAddToCustomPlaylistButtonClicked,
@@ -16,98 +20,168 @@ class SongTile extends StatelessWidget {
     required this.dataProvider,
   });
 
+  @override
+  State<SongTile> createState() => _SongTileState();
+}
+
+class _SongTileState extends State<SongTile> {
+  var isdownloading = false;
+
   List<Widget> rightIcons(BuildContext context) {
-    if (currentIndexProvider.currentIndex == 1) {
+    if (widget.currentIndexProvider.currentIndex == 1) {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.toggleLikedsong(song!);
+            widget.dataProvider.toggleLikedsong(widget.song!);
           },
-          icon: dataProvider.isSongLiked(song!.id)
+          icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
         ),
 
         IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.cloud_download_outlined,
-            color: Colors.white,
-            size: 30,
-          ),
+          onPressed: () async {
+            if (!widget.dataProvider
+                .getplaylistsbyName("Downloads")
+                .songKeySet
+                .contains(widget.song!.id)) {
+              setState(() {
+                isdownloading = true;
+              });
+              await widget.dataProvider.downloadSong(widget.song!);
+              setState(() {
+                isdownloading = false;
+              });
+            }
+          },
+          icon: isdownloading
+              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              : !widget.dataProvider
+                    .getplaylistsbyName("Downloads")
+                    .songKeySet
+                    .contains(widget.song!.id)
+              ? Icon(Icons.downloading, color: Colors.white, size: 30)
+              : Icon(
+                  Icons.download_done_rounded,
+                  color: Colors.green,
+                  size: 30,
+                ),
         ),
 
         IconButton(
           onPressed: () {
-            toggleAddToCustomPlaylistButtonClicked!();
-            dataProvider.setSelctedSongtoAddToPlaylist(song!);
+            widget.toggleAddToCustomPlaylistButtonClicked!();
+            widget.dataProvider.setSelctedSongtoAddToPlaylist(widget.song!);
           },
           icon: Icon(Icons.add, color: Colors.white, size: 30),
         ),
       ];
-    } else if (dataProvider.clickedPlaylist?.toLowerCase() == "downloads") {
+    } else if (widget.dataProvider.clickedPlaylist?.toLowerCase() ==
+        "downloads") {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.toggleLikedsong(song!);
+            widget.dataProvider.toggleLikedsong(widget.song!);
           },
-          icon: dataProvider.isSongLiked(song!.id)
+          icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
           color: Colors.white70,
         ),
         // Delete icon
         IconButton(
-          onPressed: () {},
+          onPressed: () async {
+            widget.dataProvider.removeFromPlaylist(
+              widget.dataProvider.getplaylistsbyName("Downloads"),
+              widget.dataProvider.getSongById(widget.song!.id)!,
+            );
+            Song? song = widget.dataProvider.getSongById(widget.song!.id);
+            await File(song!.downloadPath.toString()).delete();
+            song.downloadPath = "";
+            Database.addSongtoDb(song);
+          },
           icon: const Icon(Icons.delete_outline, color: Colors.red, size: 30),
           color: Colors.white70,
         ),
       ];
-    } else if (dataProvider.clickedPlaylist?.toLowerCase() == "liked songs") {
+    } else if (widget.dataProvider.clickedPlaylist?.toLowerCase() ==
+        "liked songs") {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.toggleLikedsong(song!);
+            widget.dataProvider.toggleLikedsong(widget.song!);
           },
-          icon: dataProvider.isSongLiked(song!.id)
+          icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
         ),
 
         IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.cloud_download_outlined,
-            color: Colors.white,
-            size: 30,
-          ),
+          onPressed: () async {
+            setState(() {
+              isdownloading = true;
+            });
+            await widget.dataProvider.downloadSong(widget.song!);
+            setState(() {
+              isdownloading = false;
+            });
+          },
+          icon: isdownloading
+              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              : !widget.dataProvider
+                    .getplaylistsbyName("Downloads")
+                    .songKeySet
+                    .contains(widget.song!.id)
+              ? Icon(Icons.downloading, color: Colors.white, size: 30)
+              : Icon(
+                  Icons.download_done_rounded,
+                  color: Colors.green,
+                  size: 30,
+                ),
         ),
       ];
     } else {
       return [
         IconButton(
           onPressed: () {
-            dataProvider.toggleLikedsong(song!);
+            widget.dataProvider.toggleLikedsong(widget.song!);
           },
-          icon: dataProvider.isSongLiked(song!.id)
+          icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
               : Icon(Icons.favorite_outline, size: 30),
         ),
 
         IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.cloud_download_outlined,
-            color: Colors.white,
-            size: 30,
-          ),
+          onPressed: () async {
+            setState(() {
+              isdownloading = true;
+            });
+            await widget.dataProvider.downloadSong(widget.song!);
+            setState(() {
+              isdownloading = false;
+            });
+          },
+          icon: isdownloading
+              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              : !widget.dataProvider
+                    .getplaylistsbyName("Downloads")
+                    .songKeySet
+                    .contains(widget.song!.id)
+              ? Icon(Icons.downloading, color: Colors.white, size: 30)
+              : Icon(
+                  Icons.download_done_rounded,
+                  color: Colors.green,
+                  size: 30,
+                ),
         ),
 
         IconButton(
           onPressed: () {
-            dataProvider.removeFromPlaylist(
-              dataProvider.getplaylistsbyName(dataProvider.clickedPlaylist!),
-              song!,
+            widget.dataProvider.removeFromPlaylist(
+              widget.dataProvider.getplaylistsbyName(
+                widget.dataProvider.clickedPlaylist!,
+              ),
+              widget.song!,
             );
           },
           icon: Icon(Icons.close, color: Colors.red, size: 30),
@@ -120,8 +194,8 @@ class SongTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        dataProvider.playAudio(song!);
-        dataProvider.setClickedSong(song);
+        widget.dataProvider.playAudio(widget.song!);
+        widget.dataProvider.setClickedSong(widget.song);
       },
       child: Row(
         children: [
@@ -131,7 +205,7 @@ class SongTile extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
-                image: NetworkImage(song!.imageUrl),
+                image: NetworkImage(widget.song!.imageUrl),
                 fit: BoxFit.cover,
               ),
             ),
@@ -143,7 +217,7 @@ class SongTile extends StatelessWidget {
               children: [
                 Text(
                   overflow: TextOverflow.ellipsis,
-                  song!.name,
+                  widget.song!.name,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -153,7 +227,7 @@ class SongTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   overflow: TextOverflow.ellipsis,
-                  song!.artist,
+                  widget.song!.artist,
                   style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],

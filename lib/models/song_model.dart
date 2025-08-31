@@ -12,13 +12,12 @@ class Song {
   late String name;
   late String artist;
   late String imageUrl;
-  String? downloadPath;
+  String? downloadPath = "";
 
   Song({
     required this.id,
     required this.name,
     required this.artist,
     required this.imageUrl,
-    this.downloadPath,
   });
 }

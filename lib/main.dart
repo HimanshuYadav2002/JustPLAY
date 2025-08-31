@@ -5,6 +5,7 @@ import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/components/mini_player.dart';
 import 'package:music_app/pages/playlist_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'pages/search_page.dart';
 import 'pages/library_page.dart';
@@ -18,6 +19,7 @@ void main() async {
   );
 
   await Database.instance;
+  await Permission.manageExternalStorage.request();
 
   runApp(
     ChangeNotifierProvider(
