@@ -18,100 +18,102 @@ class MiniPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF2A2422),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Main row
-          Row(
-            children: [
-              // Album art
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Image.network(
-                  song.imageUrl,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        currentIndexProvider.setNavigationIndex(3);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF2A2422),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Main row
+            Row(
+              children: [
+                // Album art
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.network(
+                    song.imageUrl,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
+                const SizedBox(width: 8),
 
-              // Song details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      song.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                // Song details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        song.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      song.artist,
-                      style: const TextStyle(color: Colors.white70),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                      Text(
+                        song.artist,
+                        style: const TextStyle(color: Colors.white70),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              // Heart icon
-              IconButton(
-                onPressed: () {
-                  dataProvider.toggleLikedsong(song);
-                },
-                icon: dataProvider.isSongLiked(song.id)
-                    ? Icon(Icons.favorite, color: Colors.green, size: 30)
-                    : Icon(Icons.favorite_outline, size: 30),
-              ),
+                // Heart icon
+                IconButton(
+                  onPressed: () {
+                    dataProvider.toggleLikedsong(song);
+                  },
+                  icon: dataProvider.isSongLiked(song.id)
+                      ? Icon(Icons.favorite, color: Colors.green, size: 30)
+                      : Icon(Icons.favorite_outline, size: 30),
+                ),
 
-              IconButton(
-                onPressed: () {
-                  dataProvider.togglePlayPause();
-                },
-                icon: dataProvider.musicPlayer.playing
-                    ? Icon(Icons.pause, color: Colors.white, size: 28)
-                    : Icon(Icons.play_arrow, color: Colors.white, size: 28),
-              ),
+                IconButton(
+                  onPressed: dataProvider.togglePlayPause,
+                  icon: dataProvider.musicPlayer.playing
+                      ? Icon(Icons.pause, color: Colors.white, size: 28)
+                      : Icon(Icons.play_arrow, color: Colors.white, size: 28),
+                ),
 
-              // Play icon
-            ],
-          ),
+                // Play icon
+              ],
+            ),
 
-          const SizedBox(height: 8),
+            const SizedBox(height: 8),
 
-          StreamBuilder<Duration>(
-            stream: dataProvider.musicPlayer.positionStream,
-            builder: (context, snapshot) {
-              final position = snapshot.data ?? Duration.zero;
-              final duration =
-                  dataProvider.musicPlayer.duration ?? Duration.zero;
-              final buffered =
-                  dataProvider.musicPlayer.bufferedPosition;
+            StreamBuilder<Duration>(
+              stream: dataProvider.musicPlayer.positionStream,
+              builder: (context, snapshot) {
+                final position = snapshot.data ?? Duration.zero;
+                final duration =
+                    dataProvider.musicPlayer.duration ?? Duration.zero;
+                final buffered = dataProvider.musicPlayer.bufferedPosition;
 
-              return ProgressBar(
-                thumbRadius: 5,
-                timeLabelType: TimeLabelType.remainingTime,
-                timeLabelLocation: TimeLabelLocation.none,
-                progress: position,
-                buffered: buffered,
-                total: duration,
-                onSeek: (newPosition) {
-                  dataProvider.musicPlayer.seek(newPosition);
-                },
-              );
-            },
-          ),
-        ],
+                return ProgressBar(
+                  thumbRadius: 5,
+                  timeLabelType: TimeLabelType.remainingTime,
+                  timeLabelLocation: TimeLabelLocation.none,
+                  progress: position,
+                  buffered: buffered,
+                  total: duration,
+                  onSeek: (newPosition) {
+                    dataProvider.musicPlayer.seek(newPosition);
+                  },
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

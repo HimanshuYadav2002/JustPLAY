@@ -20,7 +20,7 @@ class PlaylistTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         currentIndexProvider.setNavigationIndex(2);
-        dataProvider.setClickedPlaylist(playlist);
+        dataProvider.setClickedPlaylist(playlist.name);
       },
       child: Row(
         children: [

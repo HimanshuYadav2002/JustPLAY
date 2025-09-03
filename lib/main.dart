@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:music_app/Database/database.dart';
@@ -44,7 +45,9 @@ class JustPLAY extends StatelessWidget {
       try {
         await channel.invokeMethod("minimizeApp");
       } on PlatformException catch (e) {
-        print("Failed to minimize app: ${e.message}");
+        if (kDebugMode) {
+          print("Failed to minimize app: ${e.message}");
+        }
       }
     }
 
@@ -65,7 +68,7 @@ class JustPLAY extends StatelessWidget {
         currentIndexProvider: currentIndexProvider,
         dataProvider: dataProvider,
       ),
-      MusicPlayer(),
+      MusicPlayer(dataProvider: dataProvider),
     ];
 
     return MaterialApp(
@@ -110,7 +113,7 @@ class JustPLAY extends StatelessWidget {
                 Expanded(
                   child: pages[currentIndexProvider.navigationCurrentIndex],
                 ),
-                (dataProvider.clickedSong != null)
+                (dataProvider.clickedSong != null && currentIndexProvider.navigationCurrentIndex != 3 )
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: MiniPlayer(

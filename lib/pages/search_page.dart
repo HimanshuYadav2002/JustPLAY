@@ -71,7 +71,7 @@ class _SearchPageState extends State<SearchPage> {
           id: track.videoId, // YT Music song/video ID
           name: track.name,
           artist: track.artist.name,
-          imageUrl: track.thumbnails.first.url, // use first thumbnail
+          imageUrl: track.thumbnails.last.url, // use first thumbnail
         );
       }).toList();
       isLoading = false;

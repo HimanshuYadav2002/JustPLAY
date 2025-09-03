@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_app/Database/database.dart';
@@ -7,6 +7,7 @@ import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'dart:io';
 import 'package:music_app/Streaming_Logic/core_streaming_functions.dart';
+import 'package:music_app/recommendation_logic/next_song_list.dart';
 import 'package:path/path.dart' as path;
 
 class DataProvider with ChangeNotifier {
@@ -65,8 +66,8 @@ class DataProvider with ChangeNotifier {
   String? get clickedPlaylist => _clickedPlaylist;
   Song? get clickedSong => _clickedSong;
 
-  void setClickedPlaylist(Playlist? playlist) {
-    _clickedPlaylist = playlist?.name;
+  void setClickedPlaylist(String playlist) {
+    _clickedPlaylist = playlist;
     notifyListeners();
   }
 
@@ -198,26 +199,102 @@ class DataProvider with ChangeNotifier {
       currentsong.downloadPath = filePath;
       Database.addSongtoDb(currentsong);
       notifyListeners();
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  // music player logic
+
+  Map<String, Song> _songQueue = {};
+  // List<Song> get songQueue => _songQueue;
+  int _currentPlayingIndex = 0;
+  int get currentPlayingIndex => _currentPlayingIndex;
+
+  void setSongQueue(Map<String, Song> queue) {
+    _songQueue = queue;
+    notifyListeners();
+  }
+
+  void setCurrentPlayingIndex(int value) {
+    _currentPlayingIndex = value;
+    notifyListeners();
   }
 
   final _musicPlayer = AudioPlayer();
   AudioPlayer get musicPlayer => _musicPlayer;
 
-  Future<void> playAudio(Song song) async {
-    _musicPlayer.stop();
-    _musicPlayer.clearAudioSources();
-    if (song.downloadPath == "") {
-      final audioSource = YoutubeAudioSource(videoId: song.id);
-      await _musicPlayer.setAudioSource(audioSource);
-    } else {
-      _musicPlayer.setFilePath(getSongById(song.id)!.downloadPath ?? "");
-      for (var i = 0; i < 10; i++) {
-        print("playing by file ");
-      }
+  Future<void> playAudio(Song song, int navigationIndex) async {
+    await _musicPlayer.pause();
+    if (navigationIndex != 3) {
+      setSongQueue({});
     }
-    togglePlayPause();
+
+    if (navigationIndex == 3) {
+      setCurrentPlayingIndex(_songQueue.keys.toList().indexOf(song.id));
+    }
+    await _musicPlayer.clearAudioSources();
+
+    // Build the playlist: first song + recommended
+    if (song.downloadPath == "") {
+      await _musicPlayer.setAudioSource(YoutubeAudioSource(videoId: song.id));
+    } else {
+      await _musicPlayer.setAudioSource(
+        AudioSource.uri(Uri.file(song.downloadPath!)),
+      );
+    }
+
+    if (navigationIndex != 1) {
+      Map<String, Song> playlistSongqueue = {};
+      for (String key
+          in _playlists[_clickedPlaylist]!.songKeys.toList().sublist(
+            _playlists[_clickedPlaylist]!.songKeys.toList().indexOf(song.id),
+          )) {
+        playlistSongqueue[key] = _songsList[key]!;
+      }
+      setSongQueue(playlistSongqueue);
+      setClickedSong(_songQueue.values.toList()[0]);
+    }
+
     _musicPlayer.play();
+
+    if (navigationIndex == 1) {
+      Map<String, Song> queue = await getRecomendedSongs(songId: song.id);
+      setSongQueue(queue);
+      setClickedSong(_songQueue.values.toList()[0]);
+    } 
+  }
+
+  void playPrevious() async {
+    if (_currentPlayingIndex > 0) {
+      setCurrentPlayingIndex(_currentPlayingIndex - 1);
+      setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
+      await _musicPlayer.pause();
+      await _musicPlayer.clearAudioSources();
+      await _musicPlayer.setAudioSource(
+        YoutubeAudioSource(
+          videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
+        ),
+      );
+      await _musicPlayer.play();
+    }
+  }
+
+  void playNext() async {
+    if (_currentPlayingIndex < _songQueue.length - 1) {
+      setCurrentPlayingIndex(_currentPlayingIndex + 1);
+      setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
+      await _musicPlayer.pause();
+      await _musicPlayer.clearAudioSources();
+      await _musicPlayer.setAudioSource(
+        YoutubeAudioSource(
+          videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
+        ),
+      );
+      await _musicPlayer.play();
+    }
   }
 
   void togglePlayPause() {
