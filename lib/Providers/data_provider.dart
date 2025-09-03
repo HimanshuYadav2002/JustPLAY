@@ -11,6 +11,22 @@ import 'package:music_app/recommendation_logic/next_song_list.dart';
 import 'package:path/path.dart' as path;
 
 class DataProvider with ChangeNotifier {
+  DataProvider() {
+    _musicPlayer.playerStateStream.listen((state) async {
+      if (state.processingState == ProcessingState.completed) {
+        if (_currentPlayingIndex < _songQueue.length - 1) {
+          setCurrentPlayingIndex(_currentPlayingIndex + 1);
+          setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
+          await _musicPlayer.setAudioSource(
+            YoutubeAudioSource(
+              videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
+            ),
+          );
+          await _musicPlayer.play();
+        }
+      }
+    });
+  }
   final Map<String, Song> _songsList = {};
 
   void loadSongsFromDB() async {
@@ -211,7 +227,7 @@ class DataProvider with ChangeNotifier {
   Map<String, Song> _songQueue = {};
   // List<Song> get songQueue => _songQueue;
   int _currentPlayingIndex = 0;
-  int get currentPlayingIndex => _currentPlayingIndex;
+  // int get currentPlayingIndex => _currentPlayingIndex;
 
   void setSongQueue(Map<String, Song> queue) {
     _songQueue = queue;
@@ -227,15 +243,15 @@ class DataProvider with ChangeNotifier {
   AudioPlayer get musicPlayer => _musicPlayer;
 
   Future<void> playAudio(Song song, int navigationIndex) async {
-    await _musicPlayer.pause();
+    if (_musicPlayer.playing) _musicPlayer.pause();
     if (navigationIndex != 3) {
       setSongQueue({});
     }
 
     if (navigationIndex == 3) {
       setCurrentPlayingIndex(_songQueue.keys.toList().indexOf(song.id));
+      setClickedSong(song);
     }
-    await _musicPlayer.clearAudioSources();
 
     // Build the playlist: first song + recommended
     if (song.downloadPath == "") {
@@ -246,7 +262,7 @@ class DataProvider with ChangeNotifier {
       );
     }
 
-    if (navigationIndex != 1) {
+    if (navigationIndex ==2) {
       Map<String, Song> playlistSongqueue = {};
       for (String key
           in _playlists[_clickedPlaylist]!.songKeys.toList().sublist(
@@ -271,8 +287,7 @@ class DataProvider with ChangeNotifier {
     if (_currentPlayingIndex > 0) {
       setCurrentPlayingIndex(_currentPlayingIndex - 1);
       setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
-      await _musicPlayer.pause();
-      await _musicPlayer.clearAudioSources();
+      if (_musicPlayer.playing) _musicPlayer.pause();
       await _musicPlayer.setAudioSource(
         YoutubeAudioSource(
           videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
@@ -286,8 +301,7 @@ class DataProvider with ChangeNotifier {
     if (_currentPlayingIndex < _songQueue.length - 1) {
       setCurrentPlayingIndex(_currentPlayingIndex + 1);
       setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
-      await _musicPlayer.pause();
-      await _musicPlayer.clearAudioSources();
+      if (_musicPlayer.playing) _musicPlayer.pause();
       await _musicPlayer.setAudioSource(
         YoutubeAudioSource(
           videoId: _songQueue.values.toList()[_currentPlayingIndex].id,

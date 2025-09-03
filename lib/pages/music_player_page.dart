@@ -11,7 +11,6 @@ class MusicPlayer extends StatefulWidget {
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -74,6 +73,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: controlsPadding),
             child: Row(
+              spacing: 5,
               children: [
                 Expanded(
                   child: Column(
@@ -82,6 +82,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                       Text(
                         widget.dataProvider.clickedSong!.name,
                         overflow: TextOverflow.clip,
+                        maxLines: 1,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -120,74 +121,46 @@ class _MusicPlayerState extends State<MusicPlayer> {
             ),
           ),
 
-          SizedBox(height: verticalSpacing * 0.5),
+          SizedBox(height: verticalSpacing),
 
           // Slider
           Padding(
             padding: EdgeInsets.symmetric(horizontal: sliderHorizontalPadding),
             child: Column(
               children: [
-                StreamBuilder<Duration>(
-                  stream: widget.dataProvider.musicPlayer.positionStream,
-                  builder: (context, snapshot) {
-                    final position = snapshot.data ?? Duration.zero;
-                    final duration =
-                        widget.dataProvider.musicPlayer.duration ??
-                        Duration.zero;
-                    final buffered =
-                        widget.dataProvider.musicPlayer.bufferedPosition;
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: sliderHorizontalPadding * 2,
+                  ),
+                  child: StreamBuilder<Duration>(
+                    stream: widget.dataProvider.musicPlayer.positionStream,
+                    builder: (context, snapshot) {
+                      final position = snapshot.data ?? Duration.zero;
+                      final duration =
+                          widget.dataProvider.musicPlayer.duration ??
+                          Duration.zero;
+                      final buffered =
+                          widget.dataProvider.musicPlayer.bufferedPosition;
 
-                    return ProgressBar(
-                      thumbRadius: 5,
-                      timeLabelType: TimeLabelType.remainingTime,
-                      timeLabelLocation: TimeLabelLocation.none,
-                      progress: position,
-                      buffered: buffered,
-                      total: duration,
-                      onSeek: (newPosition) {
-                        widget.dataProvider.musicPlayer.seek(newPosition);
-                      },
-                    );
-                  },
+                      return ProgressBar(
+                        thumbRadius: 5,
+                        timeLabelType: TimeLabelType.remainingTime,
+                        timeLabelLocation: TimeLabelLocation.none,
+                        progress: position,
+                        buffered: buffered,
+                        total: duration,
+                        onSeek: (newPosition) {
+                          widget.dataProvider.musicPlayer.seek(newPosition);
+                        },
+                      );
+                    },
+                  ),
                 ),
-
-                // Slider(
-                //   value: 40,
-                //   min: 0,
-                //   max: 266,
-                //   activeColor: const Color(0xFF1DB954), // Spotify green
-                //   inactiveColor: Colors.white24,
-                //   onChanged: (value) {},
-                // ),
-                // Padding(
-                //   padding: EdgeInsets.symmetric(
-                //     horizontal: sliderHorizontalPadding * 2,
-                //   ),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Text(
-                //         "0:12",
-                //         style: TextStyle(
-                //           color: Colors.white70,
-                //           fontSize: sliderLabelFontSize,
-                //         ),
-                //       ),
-                //       Text(
-                //         "4:26",
-                //         style: TextStyle(
-                //           color: Colors.white70,
-                //           fontSize: sliderLabelFontSize,
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
               ],
             ),
           ),
 
-          SizedBox(height: verticalSpacing * 0.5),
+          SizedBox(height: verticalSpacing),
 
           // Controls
           Padding(
@@ -237,6 +210,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
               ],
             ),
           ),
+          
         ],
       ),
     );
