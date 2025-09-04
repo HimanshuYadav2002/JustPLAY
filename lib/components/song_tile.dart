@@ -194,7 +194,6 @@ class _SongTileState extends State<SongTile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        widget.dataProvider.setClickedSong(widget.song);
         widget.dataProvider.playAudio(
           widget.song!,widget.currentIndexProvider.navigationCurrentIndex
         );

@@ -17,11 +17,24 @@ class DataProvider with ChangeNotifier {
         if (_currentPlayingIndex < _songQueue.length - 1) {
           setCurrentPlayingIndex(_currentPlayingIndex + 1);
           setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
-          await _musicPlayer.setAudioSource(
-            YoutubeAudioSource(
-              videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
-            ),
-          );
+          if (_songQueue.values.toList()[_currentPlayingIndex].downloadPath ==
+              "") {
+            await _musicPlayer.setAudioSource(
+              YoutubeAudioSource(
+                videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
+              ),
+            );
+          } else {
+            await _musicPlayer.setAudioSource(
+              AudioSource.uri(
+                Uri.file(
+                  _songQueue.values
+                      .toList()[_currentPlayingIndex]
+                      .downloadPath!,
+                ),
+              ),
+            );
+          }
           await _musicPlayer.play();
         }
       }
@@ -246,6 +259,7 @@ class DataProvider with ChangeNotifier {
     if (_musicPlayer.playing) _musicPlayer.pause();
     if (navigationIndex != 3) {
       setSongQueue({});
+      setCurrentPlayingIndex(0);
     }
 
     if (navigationIndex == 3) {
@@ -253,16 +267,13 @@ class DataProvider with ChangeNotifier {
       setClickedSong(song);
     }
 
-    // Build the playlist: first song + recommended
-    if (song.downloadPath == "") {
-      await _musicPlayer.setAudioSource(YoutubeAudioSource(videoId: song.id));
-    } else {
-      await _musicPlayer.setAudioSource(
-        AudioSource.uri(Uri.file(song.downloadPath!)),
-      );
+    if (navigationIndex == 1) {
+      Map<String, Song> queue = await getRecomendedSongs(songId: song.id);
+      setSongQueue(queue);
+      setClickedSong(_songQueue.values.toList()[0]);
     }
 
-    if (navigationIndex ==2) {
+    if (navigationIndex == 2) {
       Map<String, Song> playlistSongqueue = {};
       for (String key
           in _playlists[_clickedPlaylist]!.songKeys.toList().sublist(
@@ -274,39 +285,61 @@ class DataProvider with ChangeNotifier {
       setClickedSong(_songQueue.values.toList()[0]);
     }
 
-    _musicPlayer.play();
+    if (song.downloadPath == "") {
+      await _musicPlayer.setAudioSource(YoutubeAudioSource(videoId: song.id));
+    } else {
+      await _musicPlayer.setAudioSource(
+        AudioSource.uri(Uri.file(song.downloadPath!)),
+      );
+    }
 
-    if (navigationIndex == 1) {
-      Map<String, Song> queue = await getRecomendedSongs(songId: song.id);
-      setSongQueue(queue);
-      setClickedSong(_songQueue.values.toList()[0]);
-    } 
+    await _musicPlayer.play();
   }
 
   void playPrevious() async {
     if (_currentPlayingIndex > 0) {
+      if (_musicPlayer.playing) _musicPlayer.pause();
       setCurrentPlayingIndex(_currentPlayingIndex - 1);
       setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
-      if (_musicPlayer.playing) _musicPlayer.pause();
-      await _musicPlayer.setAudioSource(
-        YoutubeAudioSource(
-          videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
-        ),
-      );
+      if (_songQueue.values.toList()[_currentPlayingIndex].downloadPath == "") {
+        await _musicPlayer.setAudioSource(
+          YoutubeAudioSource(
+            videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
+          ),
+        );
+      } else {
+        await _musicPlayer.setAudioSource(
+          AudioSource.uri(
+            Uri.file(
+              _songQueue.values.toList()[_currentPlayingIndex].downloadPath!,
+            ),
+          ),
+        );
+      }
       await _musicPlayer.play();
     }
   }
 
   void playNext() async {
     if (_currentPlayingIndex < _songQueue.length - 1) {
+      if (_musicPlayer.playing) _musicPlayer.pause();
       setCurrentPlayingIndex(_currentPlayingIndex + 1);
       setClickedSong(_songQueue.values.toList()[_currentPlayingIndex]);
-      if (_musicPlayer.playing) _musicPlayer.pause();
-      await _musicPlayer.setAudioSource(
-        YoutubeAudioSource(
-          videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
-        ),
-      );
+      if (_songQueue.values.toList()[_currentPlayingIndex].downloadPath == "") {
+        await _musicPlayer.setAudioSource(
+          YoutubeAudioSource(
+            videoId: _songQueue.values.toList()[_currentPlayingIndex].id,
+          ),
+        );
+      } else {
+        await _musicPlayer.setAudioSource(
+          AudioSource.uri(
+            Uri.file(
+              _songQueue.values.toList()[_currentPlayingIndex].downloadPath!,
+            ),
+          ),
+        );
+      }
       await _musicPlayer.play();
     }
   }
