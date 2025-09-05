@@ -28,7 +28,45 @@ class _SongTileState extends State<SongTile> {
   var isdownloading = false;
 
   List<Widget> rightIcons(BuildContext context) {
-    if (widget.currentIndexProvider.currentIndex == 1) {
+    if (widget.dataProvider.clickedPlaylist?.toLowerCase() ==
+            "liked songs" ||
+        widget.currentIndexProvider.navigationCurrentIndex == 3) {
+      return [
+        IconButton(
+          onPressed: () {
+            widget.dataProvider.toggleLikedsong(widget.song!);
+          },
+          icon: widget.dataProvider.isSongLiked(widget.song!.id)
+              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              : Icon(Icons.favorite_outline, size: 30),
+        ),
+
+        IconButton(
+          onPressed: () async {
+            setState(() {
+              isdownloading = true;
+            });
+            await widget.dataProvider.downloadSong(widget.song!);
+            setState(() {
+              isdownloading = false;
+            });
+          },
+          icon: isdownloading
+              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              : !widget.dataProvider
+                    .getplaylistsbyName("Downloads")
+                    .songKeySet
+                    .contains(widget.song!.id)
+              ? Icon(Icons.downloading, color: Colors.white, size: 30)
+              : Icon(
+                  Icons.download_done_rounded,
+                  color: Colors.green,
+                  size: 30,
+                ),
+        ),
+      ];
+    }
+    else if (widget.currentIndexProvider.currentIndex == 1) {
       return [
         IconButton(
           onPressed: () {
@@ -102,42 +140,6 @@ class _SongTileState extends State<SongTile> {
           },
           icon: const Icon(Icons.delete_outline, color: Colors.red, size: 30),
           color: Colors.white70,
-        ),
-      ];
-    } else if (widget.dataProvider.clickedPlaylist?.toLowerCase() ==
-        "liked songs") {
-      return [
-        IconButton(
-          onPressed: () {
-            widget.dataProvider.toggleLikedsong(widget.song!);
-          },
-          icon: widget.dataProvider.isSongLiked(widget.song!.id)
-              ? Icon(Icons.favorite, color: Colors.green, size: 30)
-              : Icon(Icons.favorite_outline, size: 30),
-        ),
-
-        IconButton(
-          onPressed: () async {
-            setState(() {
-              isdownloading = true;
-            });
-            await widget.dataProvider.downloadSong(widget.song!);
-            setState(() {
-              isdownloading = false;
-            });
-          },
-          icon: isdownloading
-              ? Icon(Icons.downloading, color: Colors.green, size: 30)
-              : !widget.dataProvider
-                    .getplaylistsbyName("Downloads")
-                    .songKeySet
-                    .contains(widget.song!.id)
-              ? Icon(Icons.downloading, color: Colors.white, size: 30)
-              : Icon(
-                  Icons.download_done_rounded,
-                  color: Colors.green,
-                  size: 30,
-                ),
         ),
       ];
     } else {

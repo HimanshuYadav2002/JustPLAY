@@ -238,7 +238,7 @@ class DataProvider with ChangeNotifier {
   // music player logic
 
   Map<String, Song> _songQueue = {};
-  // List<Song> get songQueue => _songQueue;
+  List<Song> get songQueue => _songQueue.values.toList();
   int _currentPlayingIndex = 0;
   // int get currentPlayingIndex => _currentPlayingIndex;
 

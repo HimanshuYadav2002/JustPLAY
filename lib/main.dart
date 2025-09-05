@@ -68,7 +68,10 @@ class JustPLAY extends StatelessWidget {
         currentIndexProvider: currentIndexProvider,
         dataProvider: dataProvider,
       ),
-      MusicPlayer(dataProvider: dataProvider),
+      MusicPlayer(
+        dataProvider: dataProvider,
+        currentIndexProvider: currentIndexProvider,
+      ),
     ];
 
     return MaterialApp(
