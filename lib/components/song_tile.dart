@@ -28,8 +28,7 @@ class _SongTileState extends State<SongTile> {
   var isdownloading = false;
 
   List<Widget> rightIcons(BuildContext context) {
-    if (widget.dataProvider.clickedPlaylist?.toLowerCase() ==
-            "liked songs" ||
+    if (widget.dataProvider.clickedPlaylist?.toLowerCase() == "liked songs" ||
         widget.currentIndexProvider.navigationCurrentIndex == 3) {
       return [
         IconButton(
@@ -65,8 +64,7 @@ class _SongTileState extends State<SongTile> {
                 ),
         ),
       ];
-    }
-    else if (widget.currentIndexProvider.currentIndex == 1) {
+    } else if (widget.currentIndexProvider.currentIndex == 1) {
       return [
         IconButton(
           onPressed: () {
@@ -197,51 +195,64 @@ class _SongTileState extends State<SongTile> {
     return GestureDetector(
       onTap: () {
         widget.dataProvider.playAudio(
-          widget.song!,widget.currentIndexProvider.navigationCurrentIndex
+          widget.song!,
+          widget.currentIndexProvider.navigationCurrentIndex,
         );
       },
-      child: Row(
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: NetworkImage(widget.song!.imageUrl),
-                fit: BoxFit.cover,
+      child: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color:
+              (widget.dataProvider.loadingSongId == widget.song!.id ||
+                  widget.dataProvider.clickedSong?.id == widget.song!.id)
+              ? Colors.white.withAlpha(50)
+              : Colors.transparent,
+        ),
+
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                image: DecorationImage(
+                  image: NetworkImage(widget.song!.imageUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  overflow: TextOverflow.ellipsis,
-                  widget.song!.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    overflow: TextOverflow.ellipsis,
+                    widget.song!.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  overflow: TextOverflow.ellipsis,
-                  widget.song!.artist,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    overflow: TextOverflow.ellipsis,
+                    widget.song!.artist,
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: rightIcons(context),
-          ),
-        ],
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: rightIcons(context),
+            ),
+          ],
+        ),
       ),
     );
   }

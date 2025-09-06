@@ -91,9 +91,11 @@ class DataProvider with ChangeNotifier {
 
   String? _clickedPlaylist;
   Song? _clickedSong;
+  String _loadingSongId = "";
 
   String? get clickedPlaylist => _clickedPlaylist;
   Song? get clickedSong => _clickedSong;
+  String get loadingSongId => _loadingSongId;
 
   void setClickedPlaylist(String playlist) {
     _clickedPlaylist = playlist;
@@ -107,6 +109,11 @@ class DataProvider with ChangeNotifier {
 
   void setClickedSong(Song? song) {
     _clickedSong = song;
+    notifyListeners();
+  }
+
+  void setLoadingSongId(String id) {
+    _loadingSongId = id;
     notifyListeners();
   }
 
@@ -268,8 +275,11 @@ class DataProvider with ChangeNotifier {
     }
 
     if (navigationIndex == 1) {
+      setClickedSong(null);
+      setLoadingSongId(song.id);
       Map<String, Song> queue = await getRecomendedSongs(songId: song.id);
       setSongQueue(queue);
+      setLoadingSongId("");
       setClickedSong(_songQueue.values.toList()[0]);
     }
 
