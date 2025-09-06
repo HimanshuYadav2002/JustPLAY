@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:bottom_sheet_bar/bottom_sheet_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/components/song_tile.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MusicPlayer extends StatefulWidget {
   final DataProvider dataProvider;
@@ -20,7 +20,6 @@ class MusicPlayer extends StatefulWidget {
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
-  final _controller = BottomSheetBarController();
   var isdownloading = false;
 
   @override
@@ -39,9 +38,9 @@ class _MusicPlayerState extends State<MusicPlayer> {
     // final sliderLabelFontSize = width * 0.04;
     final verticalSpacing = height * 0.04;
 
-    return BottomSheetBar(
-      controller: _controller,
-      locked: false,
+    return SlidingUpPanel(
+      color: Colors.black.withAlpha(100),
+      minHeight: 40,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,7 +81,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
               ),
             ),
 
-            SizedBox(height: verticalSpacing),
+            SizedBox(height: verticalSpacing*1.5),
 
             // Song Title + Heart
             Padding(
@@ -119,7 +118,9 @@ class _MusicPlayerState extends State<MusicPlayer> {
                       setState(() {
                         isdownloading = true;
                       });
-                      await widget.dataProvider.downloadSong(widget.dataProvider.clickedSong!);
+                      await widget.dataProvider.downloadSong(
+                        widget.dataProvider.clickedSong!,
+                      );
                       setState(() {
                         isdownloading = false;
                       });
@@ -256,70 +257,51 @@ class _MusicPlayerState extends State<MusicPlayer> {
           ],
         ),
       ),
-      collapsed: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
+      padding: EdgeInsets.all(0),
+      panel: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(15),
+            borderRadius: BorderRadius.circular(10),
           ),
-          color: Colors.white.withAlpha(20),
-        ),
-        child: const Center(
-          child: Text(
-            "Next Songs",
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 15.0),
+                  child: Container(
+                    height: 5,
+                    width: 70,
+                    decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    padding: EdgeInsets.only(top: 10),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
+                    itemCount: widget.dataProvider.songQueue.length,
+                    itemBuilder: (context, index) {
+                      final song = widget.dataProvider.songQueue[index];
+                      return SongTile(
+                        song: song,
+                        currentIndexProvider: widget.currentIndexProvider,
+                        dataProvider: widget.dataProvider,
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
-      expandedBuilder: (ScrollController scrollController) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.black.withAlpha(100),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Next Songs',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 12),
-                      controller: scrollController,
-                      itemCount: widget.dataProvider.songQueue.length,
-                      itemBuilder: (context, index) {
-                        final song = widget.dataProvider.songQueue[index];
-                        return SongTile(
-                          song: song,
-                          currentIndexProvider: widget.currentIndexProvider,
-                          dataProvider: widget.dataProvider,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
