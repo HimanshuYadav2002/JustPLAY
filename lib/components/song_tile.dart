@@ -38,7 +38,7 @@ class _SongTileState extends State<SongTile> {
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
-              : Icon(Icons.favorite_outline, size: 30),
+              : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
         ),
 
         IconButton(
@@ -74,7 +74,7 @@ class _SongTileState extends State<SongTile> {
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
-              : Icon(Icons.favorite_outline, size: 30),
+              : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
         ),
 
         IconButton(
@@ -123,7 +123,7 @@ class _SongTileState extends State<SongTile> {
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
-              : Icon(Icons.favorite_outline, size: 30),
+              : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
           color: Colors.white70,
         ),
         // Delete icon
@@ -150,7 +150,7 @@ class _SongTileState extends State<SongTile> {
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
               ? Icon(Icons.favorite, color: Colors.green, size: 30)
-              : Icon(Icons.favorite_outline, size: 30),
+              : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
         ),
 
         IconButton(
