@@ -28,43 +28,8 @@ class _SongTileState extends State<SongTile> {
   var isdownloading = false;
 
   List<Widget> rightIcons(BuildContext context) {
-    if (widget.dataProvider.clickedPlaylist?.toLowerCase() == "liked songs" ||
+    if (widget.currentIndexProvider.currentIndex == 1 ||
         widget.currentIndexProvider.navigationCurrentIndex == 3) {
-      return [
-        IconButton(
-          onPressed: () {
-            widget.dataProvider.toggleLikedsong(widget.song!);
-          },
-          icon: widget.dataProvider.isSongLiked(widget.song!.id)
-              ? Icon(Icons.favorite, color: Colors.green, size: 30)
-              : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
-        ),
-
-        IconButton(
-          onPressed: () async {
-            setState(() {
-              isdownloading = true;
-            });
-            await widget.dataProvider.downloadSong(widget.song!);
-            setState(() {
-              isdownloading = false;
-            });
-          },
-          icon: isdownloading
-              ? Icon(Icons.downloading, color: Colors.green, size: 30)
-              : !widget.dataProvider
-                    .getplaylistsbyName("Downloads")
-                    .songKeySet
-                    .contains(widget.song!.id)
-              ? Icon(Icons.downloading, color: Colors.white, size: 30)
-              : Icon(
-                  Icons.download_done_rounded,
-                  color: Colors.green,
-                  size: 30,
-                ),
-        ),
-      ];
-    } else if (widget.currentIndexProvider.currentIndex == 1) {
       return [
         IconButton(
           onPressed: () {
@@ -113,6 +78,42 @@ class _SongTileState extends State<SongTile> {
         ),
       ];
     } else if (widget.dataProvider.clickedPlaylist?.toLowerCase() ==
+        "liked songs") {
+      return [
+        IconButton(
+          onPressed: () {
+            widget.dataProvider.toggleLikedsong(widget.song!);
+          },
+          icon: widget.dataProvider.isSongLiked(widget.song!.id)
+              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
+        ),
+
+        IconButton(
+          onPressed: () async {
+            setState(() {
+              isdownloading = true;
+            });
+            await widget.dataProvider.downloadSong(widget.song!);
+            setState(() {
+              isdownloading = false;
+            });
+          },
+          icon: isdownloading
+              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              : !widget.dataProvider
+                    .getplaylistsbyName("Downloads")
+                    .songKeySet
+                    .contains(widget.song!.id)
+              ? Icon(Icons.downloading, color: Colors.white, size: 30)
+              : Icon(
+                  Icons.download_done_rounded,
+                  color: Colors.green,
+                  size: 30,
+                ),
+        ),
+      ];
+    } else if (widget.dataProvider.clickedPlaylist?.toLowerCase() ==
         "downloads") {
       return [
         IconButton(
@@ -136,7 +137,7 @@ class _SongTileState extends State<SongTile> {
             song.downloadPath = "";
             Database.addSongtoDb(song);
           },
-          icon: const Icon(Icons.delete_outline, color: Colors.red, size: 30),
+          icon: const Icon(Icons.delete, color: Colors.red, size: 30),
           color: Colors.white70,
         ),
       ];
@@ -200,7 +201,7 @@ class _SongTileState extends State<SongTile> {
         );
       },
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.only(left:10 ,right: 8 ,top:8 ,bottom:8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color:
@@ -229,8 +230,9 @@ class _SongTileState extends State<SongTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.clip,
                     widget.song!.name,
+                    maxLines: 1,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -239,8 +241,9 @@ class _SongTileState extends State<SongTile> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    overflow: TextOverflow.ellipsis,
                     widget.song!.artist,
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
                     style: const TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                 ],

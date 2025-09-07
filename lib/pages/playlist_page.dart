@@ -83,7 +83,7 @@ class PlaylistPage extends StatelessWidget {
             // Songs List
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(right: 7 , left :10),
                 child: ListView.separated(
                   itemCount: dataProvider
                       .getplaylistsbyName(dataProvider.clickedPlaylist!)

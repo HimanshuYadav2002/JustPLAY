@@ -3,6 +3,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
+import 'package:music_app/components/add_song_to_custom_playlist_tile.dart';
 import 'package:music_app/components/song_tile.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -21,6 +22,12 @@ class MusicPlayer extends StatefulWidget {
 
 class _MusicPlayerState extends State<MusicPlayer> {
   var isdownloading = false;
+  bool addToCustomPlaylistButtonClicked = false;
+  void toggleAddToCustomPlaylistButtonClicked() {
+    setState(() {
+      addToCustomPlaylistButtonClicked = !addToCustomPlaylistButtonClicked;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
     final width = size.width;
     final height = size.height;
     final albumArtSize = width * 0.8;
-    final topBarPadding = width * 0.04;
+    // final topBarPadding = width * 0.04;
     final controlsPadding = width * 0.10;
     final titleFontSize = width * 0.05;
     final artistFontSize = width * 0.035;
@@ -46,29 +53,29 @@ class _MusicPlayerState extends State<MusicPlayer> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Top Bar
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: topBarPadding,
-                vertical: verticalSpacing * 0.5,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: Colors.white,
-                    size: iconSize,
-                  ),
-                  Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                    size: iconSize * 0.9,
-                  ),
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(
+            //     horizontal: topBarPadding,
+            //     vertical: verticalSpacing * 0.5,
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Icon(
+            //         Icons.keyboard_arrow_down_rounded,
+            //         color: Colors.white,
+            //         size: iconSize,
+            //       ),
+            //       Icon(
+            //         Icons.more_vert,
+            //         color: Colors.white,
+            //         size: iconSize * 0.9,
+            //       ),
+            //     ],
+            //   ),
+            // ),
 
-            SizedBox(height: verticalSpacing * 0.25),
+            SizedBox(height: verticalSpacing * 2),
 
             // Album Art
             ClipRRect(
@@ -81,7 +88,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
               ),
             ),
 
-            SizedBox(height: verticalSpacing*1.5),
+            SizedBox(height: verticalSpacing * 1.5),
 
             // Song Title + Heart
             Padding(
@@ -105,6 +112,8 @@ class _MusicPlayerState extends State<MusicPlayer> {
                         SizedBox(height: 4),
                         Text(
                           widget.dataProvider.clickedSong!.artist,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: artistFontSize,
@@ -113,56 +122,64 @@ class _MusicPlayerState extends State<MusicPlayer> {
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      setState(() {
-                        isdownloading = true;
-                      });
-                      await widget.dataProvider.downloadSong(
-                        widget.dataProvider.clickedSong!,
-                      );
-                      setState(() {
-                        isdownloading = false;
-                      });
-                    },
-                    child: isdownloading
-                        ? Icon(
-                            Icons.downloading,
-                            color: Colors.green,
-                            size: heartIconSize,
-                          )
-                        : !widget.dataProvider
-                              .getplaylistsbyName("Downloads")
-                              .songKeySet
-                              .contains(widget.dataProvider.clickedSong!.id)
-                        ? Icon(
-                            Icons.downloading,
-                            color: Colors.white,
-                            size: heartIconSize,
-                          )
-                        : Icon(
-                            Icons.download_done_rounded,
-                            color: Colors.green,
-                            size: heartIconSize,
-                          ),
-                  ),
                   SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: () {
-                      widget.dataProvider.toggleLikedsong(
-                        widget.dataProvider.clickedSong!,
-                      );
-                    },
-                    child:
-                        widget.dataProvider.isSongLiked(
-                          widget.dataProvider.clickedSong!.id,
-                        )
-                        ? Icon(
-                            Icons.favorite,
-                            color: Colors.green,
-                            size: heartIconSize,
-                          )
-                        : Icon(Icons.favorite_outline, size: heartIconSize),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isdownloading = true;
+                          });
+                          await widget.dataProvider.downloadSong(
+                            widget.dataProvider.clickedSong!,
+                          );
+                          setState(() {
+                            isdownloading = false;
+                          });
+                        },
+                        child: isdownloading
+                            ? Icon(
+                                Icons.downloading,
+                                color: Colors.green,
+                                size: heartIconSize * 0.75,
+                              )
+                            : !widget.dataProvider
+                                  .getplaylistsbyName("Downloads")
+                                  .songKeySet
+                                  .contains(widget.dataProvider.clickedSong!.id)
+                            ? Icon(
+                                Icons.downloading,
+                                color: Colors.white,
+                                size: heartIconSize * 0.75,
+                              )
+                            : Icon(
+                                Icons.download_done_rounded,
+                                color: Colors.green,
+                                size: heartIconSize * 0.75,
+                              ),
+                      ),
+                      SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          widget.dataProvider.toggleLikedsong(
+                            widget.dataProvider.clickedSong!,
+                          );
+                        },
+                        child:
+                            widget.dataProvider.isSongLiked(
+                              widget.dataProvider.clickedSong!.id,
+                            )
+                            ? Icon(
+                                Icons.favorite,
+                                color: Colors.green,
+                                size: heartIconSize * 0.75,
+                              )
+                            : Icon(
+                                Icons.favorite_outline,
+                                size: heartIconSize * 0.75,
+                              ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -208,10 +225,15 @@ class _MusicPlayerState extends State<MusicPlayer> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(
-                    Icons.shuffle,
-                    color: Colors.white,
-                    size: iconSize * 0.8,
+                  GestureDetector(
+                    onTap: widget.dataProvider.toggleShuffleMode,
+                    child: Icon(
+                      Icons.shuffle,
+                      color: widget.dataProvider.shuffleMode
+                          ? Colors.green
+                          : Colors.white,
+                      size: iconSize * 0.8,
+                    ),
                   ),
                   GestureDetector(
                     onTap: widget.dataProvider.playPrevious,
@@ -250,7 +272,16 @@ class _MusicPlayerState extends State<MusicPlayer> {
                       size: iconSize * 1.2,
                     ),
                   ),
-                  Icon(Icons.repeat, color: Colors.white, size: iconSize * 0.8),
+                  GestureDetector(
+                    onTap: widget.dataProvider.toggleRepeatMode,
+                    child: Icon(
+                      Icons.repeat,
+                      color: widget.dataProvider.repeatMode
+                          ? Colors.green
+                          : Colors.white,
+                      size: iconSize * 0.8,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -267,35 +298,77 @@ class _MusicPlayerState extends State<MusicPlayer> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 8),
+            padding: const EdgeInsets.only(right: 7 , left :10),
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 15.0),
-                  child: Container(
-                    height: 5,
-                    width: 70,
-                    decoration: BoxDecoration(
-                      color: Colors.white70,
-                      borderRadius: BorderRadius.circular(10),
+                  padding: const EdgeInsets.only(top: 8, bottom: 10.0),
+                  child: addToCustomPlaylistButtonClicked
+                      ? GestureDetector(
+                          onTap: toggleAddToCustomPlaylistButtonClicked,
+                          child: Icon(Icons.close_rounded, size: 40),
+                        )
+                      : Container(
+                          height: 5,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.white70,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                ),
+                Center(
+                  child: Text(
+                    addToCustomPlaylistButtonClicked
+                        ? 'Add to Playlist'
+                        : "Next songs",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
                 Expanded(
-                  child: ListView.separated(
-                    padding: EdgeInsets.only(top: 10),
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 12),
-                    itemCount: widget.dataProvider.songQueue.length,
-                    itemBuilder: (context, index) {
-                      final song = widget.dataProvider.songQueue[index];
-                      return SongTile(
-                        song: song,
-                        currentIndexProvider: widget.currentIndexProvider,
-                        dataProvider: widget.dataProvider,
-                      );
-                    },
-                  ),
+                  child: addToCustomPlaylistButtonClicked
+                      ? ListView.separated(
+                          padding: EdgeInsets.only(top: 20),
+                          itemBuilder: (context, index) {
+                            final playlist = widget.dataProvider
+                                .playlistsExcludingLikedAndDownloads()[index];
+                            return AddToPlaylistTile(
+                              song: widget
+                                  .dataProvider
+                                  .selctedSongtoAddToPlaylist!,
+                              playlist: playlist,
+                              currentIndexProvider: widget.currentIndexProvider,
+                              dataProvider: widget.dataProvider,
+                              toggleAddToCustomPlaylistButtonClicked:
+                                  toggleAddToCustomPlaylistButtonClicked,
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
+                          itemCount: widget.dataProvider
+                              .playlistsExcludingLikedAndDownloads()
+                              .length,
+                        )
+                      : ListView.separated(
+                          padding: EdgeInsets.only(top: 10),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
+                          itemCount: widget.dataProvider.songQueue.length,
+                          itemBuilder: (context, index) {
+                            final song = widget.dataProvider.songQueue[index];
+                            return SongTile(
+                              song: song,
+                              currentIndexProvider: widget.currentIndexProvider,
+                              dataProvider: widget.dataProvider,
+                              toggleAddToCustomPlaylistButtonClicked:
+                                  toggleAddToCustomPlaylistButtonClicked,
+                            );
+                          },
+                        ),
                 ),
               ],
             ),

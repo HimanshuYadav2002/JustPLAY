@@ -127,7 +127,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: ListView.separated(
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 12),
@@ -156,56 +156,54 @@ class _SearchPageState extends State<SearchPage> {
             ),
             (addToCustomPlaylistButtonClicked
                 ? BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(25),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Text(
-                              'Add to Playlist',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Expanded(
-                            child: ListView.separated(
-                              itemBuilder: (context, index) {
-                                final playlist = widget
-                                    .dataProvider
-                                    .playlistsExcludingLikedAndDownloads()[index];
-                                return AddToPlaylistTile(
-                                  song: widget
-                                      .dataProvider
-                                      .selctedSongtoAddToPlaylist!,
-                                  playlist: playlist,
-                                  currentIndexProvider:
-                                      widget.currentIndexProvider,
-                                  dataProvider: widget.dataProvider,
-                                  toggleAddToCustomPlaylistButtonClicked:
-                                      toggleAddToCustomPlaylistButtonClicked,
-                                );
-                              },
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 12),
-                              itemCount: widget
-                                  .dataProvider
-                                  .playlistsExcludingLikedAndDownloads()
-                                  .length,
-                            ),
-                          ),
-                        ],
-                      ),
+                  filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(25),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  )
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Text(
+                            'Add to Playlist',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Expanded(
+                          child: ListView.separated(
+                            itemBuilder: (context, index) {
+                              final playlist = widget.dataProvider
+                                  .playlistsExcludingLikedAndDownloads()[index];
+                              return AddToPlaylistTile(
+                                song: widget
+                                    .dataProvider
+                                    .selctedSongtoAddToPlaylist!,
+                                playlist: playlist,
+                                currentIndexProvider:
+                                    widget.currentIndexProvider,
+                                dataProvider: widget.dataProvider,
+                                toggleAddToCustomPlaylistButtonClicked:
+                                    toggleAddToCustomPlaylistButtonClicked,
+                              );
+                            },
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 12),
+                            itemCount: widget.dataProvider
+                                .playlistsExcludingLikedAndDownloads()
+                                .length,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
                 : SizedBox()),
           ],
         ),

@@ -53,16 +53,18 @@ class MiniPlayer extends StatelessWidget {
                     children: [
                       Text(
                         song.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         song.artist,
                         style: const TextStyle(color: Colors.white70),
-                        overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.clip,
+                        maxLines: 1,
                       ),
                     ],
                   ),
