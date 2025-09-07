@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:music_app/Providers/data_provider.dart';
@@ -24,10 +25,11 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final ytmusicapi = YTMusic();
-
   final yt = YoutubeExplode();
   final player = AudioPlayer();
   final searchController = TextEditingController();
+  Timer? _debounce;
+  List<String> searchSuggestions = [];
   List<Video> results = [];
   List<Song> songList = [];
   bool isLoading = false;
@@ -45,11 +47,20 @@ class _SearchPageState extends State<SearchPage> {
     initYTMusic();
   }
 
+  @override
+  void dispose() {
+    _debounce?.cancel(); // clean up
+    super.dispose();
+  }
+
   Future<void> initYTMusic() async {
     await ytmusicapi.initialize(); // this loads the API key & configs
   }
 
   Future<void> searchSongs(String query) async {
+    setState(() {
+      searchSuggestions.clear();
+    });
     if (query.trim().isEmpty) {
       setState(() {
         songList.clear();
@@ -101,6 +112,23 @@ class _SearchPageState extends State<SearchPage> {
                 const SizedBox(height: 20),
                 // search field look
                 TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      songList.clear();
+                    });
+                    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+                    _debounce = Timer(
+                      const Duration(milliseconds: 50),
+                      () async {
+                        List<String> results = await ytmusicapi
+                            .getSearchSuggestions(value);
+                        setState(() {
+                          searchSuggestions = results;
+                        });
+                      },
+                    );
+                  },
                   controller: searchController,
                   onSubmitted: searchSongs,
                   style: TextStyle(color: Colors.white),
@@ -120,90 +148,123 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                 ),
+                if (searchSuggestions.isNotEmpty)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white.withAlpha(25),
+                        ),
+                        child: ListView.builder(
+                          itemCount: searchSuggestions.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                searchSongs(searchSuggestions[index]);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 8,
+                                ),
+                                child: Text(
+                                  style: TextStyle(fontSize: 18),
+                                  searchSuggestions[index],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 10),
                 if (isLoading)
                   Expanded(
                     child: Center(child: const CircularProgressIndicator()),
                   ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 12),
-                      itemCount: songList.length,
-                      itemBuilder: (context, i) {
-                        Song song = songList[i];
-                        if (widget.dataProvider
-                            .getplaylistsbyName("Downloads")
-                            .songKeySet
-                            .contains(song.id)) {
-                          song = widget.dataProvider.getSongById(song.id)!;
-                        }
+                if (songList.isNotEmpty)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 12),
+                        itemCount: songList.length,
+                        itemBuilder: (context, i) {
+                          Song song = songList[i];
+                          if (widget.dataProvider
+                              .getplaylistsbyName("Downloads")
+                              .songKeySet
+                              .contains(song.id)) {
+                            song = widget.dataProvider.getSongById(song.id)!;
+                          }
 
-                        return SongTile(
-                          song: song,
-                          currentIndexProvider: widget.currentIndexProvider,
-                          dataProvider: widget.dataProvider,
-                          toggleAddToCustomPlaylistButtonClicked:
-                              toggleAddToCustomPlaylistButtonClicked,
-                        );
-                      },
+                          return SongTile(
+                            song: song,
+                            currentIndexProvider: widget.currentIndexProvider,
+                            dataProvider: widget.dataProvider,
+                            toggleAddToCustomPlaylistButtonClicked:
+                                toggleAddToCustomPlaylistButtonClicked,
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
             (addToCustomPlaylistButtonClicked
                 ? BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(25),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Text(
-                            'Add to Playlist',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.w700,
+                    filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(25),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              'Add to Playlist',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 20),
-                        Expanded(
-                          child: ListView.separated(
-                            itemBuilder: (context, index) {
-                              final playlist = widget.dataProvider
-                                  .playlistsExcludingLikedAndDownloads()[index];
-                              return AddToPlaylistTile(
-                                song: widget
-                                    .dataProvider
-                                    .selctedSongtoAddToPlaylist!,
-                                playlist: playlist,
-                                currentIndexProvider:
-                                    widget.currentIndexProvider,
-                                dataProvider: widget.dataProvider,
-                                toggleAddToCustomPlaylistButtonClicked:
-                                    toggleAddToCustomPlaylistButtonClicked,
-                              );
-                            },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 12),
-                            itemCount: widget.dataProvider
-                                .playlistsExcludingLikedAndDownloads()
-                                .length,
+                          SizedBox(height: 20),
+                          Expanded(
+                            child: ListView.separated(
+                              itemBuilder: (context, index) {
+                                final playlist = widget.dataProvider
+                                    .playlistsExcludingLikedAndDownloads()[index];
+                                return AddToPlaylistTile(
+                                  song: widget
+                                      .dataProvider
+                                      .selctedSongtoAddToPlaylist!,
+                                  playlist: playlist,
+                                  currentIndexProvider:
+                                      widget.currentIndexProvider,
+                                  dataProvider: widget.dataProvider,
+                                  toggleAddToCustomPlaylistButtonClicked:
+                                      toggleAddToCustomPlaylistButtonClicked,
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 12),
+                              itemCount: widget.dataProvider
+                                  .playlistsExcludingLikedAndDownloads()
+                                  .length,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                )
+                  )
                 : SizedBox()),
           ],
         ),
