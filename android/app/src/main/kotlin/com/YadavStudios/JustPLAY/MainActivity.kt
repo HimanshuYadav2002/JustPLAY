@@ -1,4 +1,4 @@
-package com.example.music_app
+package com.YadavStudios.JustPLAY
 
 import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity

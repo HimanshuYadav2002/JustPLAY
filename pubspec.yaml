@@ -1,5 +1,5 @@
 name: music_app
-description: "A new Flutter project."
+description: "A music player app which let you stream and download music from youtube music"
 publish_to: "none"
 version: 0.1.0
 
@@ -29,6 +29,19 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.14.4
+  launcher_name: ^1.0.2
+  change_app_package_name: ^1.4.0
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "icon.png" # path to your main icon
+  adaptive_icon_background: "#ffffff" # (optional) background for Android adaptive icons
+  adaptive_icon_foreground: "icon.png" # (optional) foreground layer
+
+launcher_name:
+  default: "Just PLAY"
