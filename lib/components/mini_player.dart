@@ -24,7 +24,7 @@ class MiniPlayer extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2422),
+          color: Colors.blue.withAlpha(40),
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(10),
@@ -76,7 +76,7 @@ class MiniPlayer extends StatelessWidget {
                     dataProvider.toggleLikedsong(song);
                   },
                   icon: dataProvider.isSongLiked(song.id)
-                      ? Icon(Icons.favorite, color: Colors.green, size: 30)
+                      ? Icon(Icons.favorite, color: Colors.blue, size: 30)
                       : Icon(Icons.favorite_outline, size: 30),
                 ),
 
@@ -102,7 +102,11 @@ class MiniPlayer extends StatelessWidget {
                 final buffered = dataProvider.musicPlayer.bufferedPosition;
 
                 return ProgressBar(
-                  thumbRadius: 5,
+                  thumbRadius: 0,
+                  barHeight: 3,
+                  progressBarColor: Colors.blue,
+                  bufferedBarColor: Colors.white.withAlpha(25),
+                  baseBarColor: Colors.white.withAlpha(30),
                   timeLabelType: TimeLabelType.remainingTime,
                   timeLabelLocation: TimeLabelLocation.none,
                   progress: position,

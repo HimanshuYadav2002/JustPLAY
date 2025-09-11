@@ -220,19 +220,13 @@ class DataProvider with ChangeNotifier {
     "Liked Songs": Playlist(
       name: "Liked Songs",
       imageUrl:
-          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
+          "https://misc.scdn.co/liked-songs/liked-songs-300.jpg",
       songKeys: [],
     ),
     "Downloads": Playlist(
       name: "Downloads",
       imageUrl:
-          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
-      songKeys: [],
-    ),
-    "Gym Playlist": Playlist(
-      name: "Gym Playlist",
-      imageUrl:
-          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=60",
+          "",
       songKeys: [],
     ),
   };

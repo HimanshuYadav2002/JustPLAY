@@ -36,7 +36,7 @@ class _SongTileState extends State<SongTile> {
             widget.dataProvider.toggleLikedsong(widget.song!);
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
-              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              ? Icon(Icons.favorite, color: Colors.blue, size: 30)
               : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
         ),
 
@@ -56,7 +56,7 @@ class _SongTileState extends State<SongTile> {
             }
           },
           icon: isdownloading
-              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              ? Icon(Icons.downloading, color: Colors.blue, size: 30)
               : !widget.dataProvider
                     .getplaylistsbyName("Downloads")
                     .songKeySet
@@ -64,7 +64,7 @@ class _SongTileState extends State<SongTile> {
               ? Icon(Icons.downloading, color: Colors.white, size: 30)
               : Icon(
                   Icons.download_done_rounded,
-                  color: Colors.green,
+                  color: Colors.blue,
                   size: 30,
                 ),
         ),
@@ -85,7 +85,7 @@ class _SongTileState extends State<SongTile> {
             widget.dataProvider.toggleLikedsong(widget.song!);
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
-              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              ? Icon(Icons.favorite, color: Colors.blue, size: 30)
               : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
         ),
 
@@ -100,7 +100,7 @@ class _SongTileState extends State<SongTile> {
             });
           },
           icon: isdownloading
-              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              ? Icon(Icons.downloading, color: Colors.blue, size: 30)
               : !widget.dataProvider
                     .getplaylistsbyName("Downloads")
                     .songKeySet
@@ -108,7 +108,7 @@ class _SongTileState extends State<SongTile> {
               ? Icon(Icons.downloading, color: Colors.white, size: 30)
               : Icon(
                   Icons.download_done_rounded,
-                  color: Colors.green,
+                  color: Colors.blue,
                   size: 30,
                 ),
         ),
@@ -121,7 +121,7 @@ class _SongTileState extends State<SongTile> {
             widget.dataProvider.toggleLikedsong(widget.song!);
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
-              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              ? Icon(Icons.favorite, color: Colors.blue, size: 30)
               : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
           color: Colors.white70,
         ),
@@ -137,7 +137,7 @@ class _SongTileState extends State<SongTile> {
             song.downloadPath = "";
             Database.addSongtoDb(song);
           },
-          icon: const Icon(Icons.delete, color: Colors.red, size: 30),
+          icon:  Icon(Icons.delete, color: Colors.red.withAlpha(200), size: 30),
           color: Colors.white70,
         ),
       ];
@@ -148,7 +148,7 @@ class _SongTileState extends State<SongTile> {
             widget.dataProvider.toggleLikedsong(widget.song!);
           },
           icon: widget.dataProvider.isSongLiked(widget.song!.id)
-              ? Icon(Icons.favorite, color: Colors.green, size: 30)
+              ? Icon(Icons.favorite, color: Colors.blue, size: 30)
               : Icon(Icons.favorite_outline, color: Colors.white, size: 30),
         ),
 
@@ -163,7 +163,7 @@ class _SongTileState extends State<SongTile> {
             });
           },
           icon: isdownloading
-              ? Icon(Icons.downloading, color: Colors.green, size: 30)
+              ? Icon(Icons.downloading, color: Colors.blue, size: 30)
               : !widget.dataProvider
                     .getplaylistsbyName("Downloads")
                     .songKeySet
@@ -171,7 +171,7 @@ class _SongTileState extends State<SongTile> {
               ? Icon(Icons.downloading, color: Colors.white, size: 30)
               : Icon(
                   Icons.download_done_rounded,
-                  color: Colors.green,
+                  color: Colors.blue,
                   size: 30,
                 ),
         ),
@@ -207,7 +207,7 @@ class _SongTileState extends State<SongTile> {
           color:
               (widget.dataProvider.loadingSongId == widget.song!.id ||
                   widget.dataProvider.clickedSong?.id == widget.song!.id)
-              ? Colors.white.withAlpha(50)
+              ? Colors.white.withAlpha(45)
               : Colors.transparent,
         ),
 

@@ -99,17 +99,18 @@ class _SearchPageState extends State<SearchPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 20),
                 Center(
                   child: Text(
                     'Search',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 // search field look
                 TextField(
                   onChanged: (value) {
@@ -130,7 +131,12 @@ class _SearchPageState extends State<SearchPage> {
                     );
                   },
                   controller: searchController,
-                  onSubmitted: searchSongs,
+                  onSubmitted: (text) {
+                    setState(() {
+                      searchSuggestions.clear();
+                    });
+                    searchSongs(text);
+                  },
                   style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: "Song , Artist , Album",
@@ -259,6 +265,14 @@ class _SearchPageState extends State<SearchPage> {
                               itemCount: widget.dataProvider
                                   .playlistsExcludingLikedAndDownloads()
                                   .length,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          GestureDetector(
+                            onTap: toggleAddToCustomPlaylistButtonClicked,
+                            child: Text(
+                              "Close",
+                              style: TextStyle(color: Colors.red, fontSize: 20),
                             ),
                           ),
                         ],

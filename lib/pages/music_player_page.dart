@@ -46,6 +46,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
     final verticalSpacing = height * 0.04;
 
     return SlidingUpPanel(
+      parallaxEnabled: true,
       color: Colors.black.withAlpha(100),
       minHeight: 40,
       body: SafeArea(
@@ -74,7 +75,6 @@ class _MusicPlayerState extends State<MusicPlayer> {
             //     ],
             //   ),
             // ),
-
             SizedBox(height: verticalSpacing * 2),
 
             // Album Art
@@ -140,7 +140,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                         child: isdownloading
                             ? Icon(
                                 Icons.downloading,
-                                color: Colors.green,
+                                color: Colors.blue,
                                 size: heartIconSize * 0.75,
                               )
                             : !widget.dataProvider
@@ -154,7 +154,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                               )
                             : Icon(
                                 Icons.download_done_rounded,
-                                color: Colors.green,
+                                color: Colors.blue,
                                 size: heartIconSize * 0.75,
                               ),
                       ),
@@ -171,7 +171,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                             )
                             ? Icon(
                                 Icons.favorite,
-                                color: Colors.green,
+                                color: Colors.blue,
                                 size: heartIconSize * 0.75,
                               )
                             : Icon(
@@ -202,6 +202,10 @@ class _MusicPlayerState extends State<MusicPlayer> {
                       widget.dataProvider.musicPlayer.bufferedPosition;
 
                   return ProgressBar(
+                    progressBarColor: Colors.blue,
+                    thumbColor: Colors.blue,
+                    bufferedBarColor: Colors.white.withAlpha(25),
+                    baseBarColor: Colors.white.withAlpha(30),
                     thumbRadius: 5,
                     thumbCanPaintOutsideBar: false,
                     timeLabelType: TimeLabelType.remainingTime,
@@ -230,7 +234,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                     child: Icon(
                       Icons.shuffle,
                       color: widget.dataProvider.shuffleMode
-                          ? Colors.green
+                          ? Colors.blue
                           : Colors.white,
                       size: iconSize * 0.8,
                     ),
@@ -246,8 +250,8 @@ class _MusicPlayerState extends State<MusicPlayer> {
                   GestureDetector(
                     onTap: widget.dataProvider.togglePlayPause,
                     child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF1DB954),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade700,
                         shape: BoxShape.circle,
                       ),
                       padding: EdgeInsets.all(iconSize * 0.33),
@@ -277,7 +281,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                     child: Icon(
                       Icons.repeat,
                       color: widget.dataProvider.repeatMode
-                          ? Colors.green
+                          ? Colors.blue
                           : Colors.white,
                       size: iconSize * 0.8,
                     ),
@@ -294,28 +298,23 @@ class _MusicPlayerState extends State<MusicPlayer> {
         child: Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withAlpha(15),
+            color: Colors.black.withAlpha(20),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(right: 7 , left :10),
+            padding: const EdgeInsets.only(right: 7, left: 10),
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8, bottom: 10.0),
-                  child: addToCustomPlaylistButtonClicked
-                      ? GestureDetector(
-                          onTap: toggleAddToCustomPlaylistButtonClicked,
-                          child: Icon(Icons.close_rounded, size: 40),
-                        )
-                      : Container(
-                          height: 5,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.white70,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
+                  child: Container(
+                    height: 5,
+                    width: 70,
+                    decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
                 Center(
                   child: Text(
@@ -370,6 +369,14 @@ class _MusicPlayerState extends State<MusicPlayer> {
                           },
                         ),
                 ),
+                if (addToCustomPlaylistButtonClicked)
+                  GestureDetector(
+                    onTap: toggleAddToCustomPlaylistButtonClicked,
+                    child: Text(
+                      "Close",
+                      style: TextStyle(color: Colors.red, fontSize: 20),
+                    ),
+                  ),
               ],
             ),
           ),

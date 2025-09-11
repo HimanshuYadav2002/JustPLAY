@@ -19,20 +19,18 @@ class LibraryPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
-            Center(
-              child: Text(
-                'Your Library',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                ),
+            SizedBox(height: 20),
+            Text(
+              "Your Library",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 10),
             // pills row
             Row(
               spacing: 10,
@@ -51,7 +49,8 @@ class LibraryPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8),
                 child: ListView.separated(
                   itemBuilder: (context, index) {
-                    final playlist = dataProvider.playlistsExcludingDownloads()[index];
+                    final playlist = dataProvider
+                        .playlistsExcludingDownloads()[index];
                     return PlaylistTile(
                       playlist: playlist,
                       currentIndexProvider: currentIndexProvider,
@@ -72,7 +71,7 @@ class LibraryPage extends StatelessWidget {
 
   Widget _pill(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.grey.withAlpha(50),
         borderRadius: BorderRadius.circular(8),
@@ -80,7 +79,11 @@ class LibraryPage extends StatelessWidget {
       child: Center(
         child: Text(
           text,
-          style: const TextStyle(color: Colors.white70, fontSize: 15),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

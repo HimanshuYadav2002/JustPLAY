@@ -19,18 +19,17 @@ class PlaylistPage extends StatelessWidget {
         padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
         child: Column(
           children: [
-            Center(
-              child: Text(
-                dataProvider.clickedPlaylist!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            SizedBox(height: 20,),
+            Text(
+              dataProvider.clickedPlaylist!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             // Search & Sort Row
             Row(
               children: [

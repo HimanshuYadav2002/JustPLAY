@@ -63,7 +63,7 @@ class AddToPlaylistTile extends StatelessWidget {
             ),
           ),
           playlist.songKeySet.contains(song.id)
-              ? Icon(Icons.download_done_rounded, color: Colors.green, size: 30)
+              ? Icon(Icons.download_done_rounded, color: Colors.blue, size: 30)
               : SizedBox(),
         ],
       ),

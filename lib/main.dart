@@ -5,6 +5,7 @@ import 'package:music_app/Database/database.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/components/mini_player.dart';
+import 'package:music_app/pages/login_page.dart';
 import 'package:music_app/pages/playlist_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -105,7 +106,7 @@ class JustPLAY extends StatelessWidget {
               begin: Alignment.topCenter,
               end: AlignmentGeometry.directional(0, 0.1),
               colors: [
-                Colors.green.shade900, // Spotify green
+                Colors.blue, // Spotify green
                 Colors.black,
               ],
             ),
@@ -136,7 +137,7 @@ class JustPLAY extends StatelessWidget {
                 currentIndexProvider.setCurrentIndex(index);
                 currentIndexProvider.setNavigationIndex(index);
               },
-              selectedItemColor: const Color(0xFF00D074),
+              selectedItemColor: Colors.blue,
               unselectedItemColor: Colors.white70,
               showUnselectedLabels: false,
               showSelectedLabels: false,
