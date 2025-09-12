@@ -18,10 +18,11 @@ class PlaylistPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20,),
             Text(
-              dataProvider.clickedPlaylist!,
+              " ${dataProvider.clickedPlaylist!}",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 40,

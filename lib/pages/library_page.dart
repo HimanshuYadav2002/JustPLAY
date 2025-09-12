@@ -19,16 +19,33 @@ class LibraryPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20),
-            Text(
-              "Your Library",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: Icon(Icons.menu, size: 50),
+                    ),
+                    Text(
+                      " Library",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                GestureDetector(onTap: () {}, child: Icon(Icons.add, size: 50)),
+              ],
             ),
             SizedBox(height: 10),
             // pills row

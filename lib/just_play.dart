@@ -1,6 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:music_app/Providers/auth_provider.dart';
 import 'package:music_app/Providers/data_provider.dart';
 import 'package:music_app/Providers/navigation_index_provider.dart';
 import 'package:music_app/components/mini_player.dart';
@@ -18,6 +20,7 @@ class JustPlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentIndexProvider = Provider.of<CurrentIndexProvider>(context);
     final dataProvider = Provider.of<DataProvider>(context);
+    final auth = Provider.of<AuthProvider>(context);
     dataProvider.loadSongsFromDB();
     dataProvider.loadPlaylistfromDb();
 
@@ -81,6 +84,58 @@ class JustPlay extends StatelessWidget {
             ),
           ),
           child: Scaffold(
+            drawer: Drawer(
+              backgroundColor: Colors.transparent,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  color: Colors.black.withAlpha(25),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          ListTile(
+                            leading: Image.network(auth.localUser!.photoUrl!),
+                            title: Text(auth.localUser!.name!),
+                            subtitle: Text(
+                              auth.localUser!.email!,
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+
+                          SizedBox(height: 5),
+                          ListTile(
+                            title: Text("Plan Expire on"),
+                            subtitle: Text(
+                              "${auth.localUser!.subscriptionEnd!.day}/${auth.localUser!.subscriptionEnd!.month}/${auth.localUser!.subscriptionEnd!.year}",
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red.shade400,
+                          ),
+                          onPressed: () async {
+                            // sign out
+                            await auth.signOutAndClearLocal();
+                          },
+                          child: const Text(
+                            'Logout',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             body: Column(
               children: [
                 Expanded(
