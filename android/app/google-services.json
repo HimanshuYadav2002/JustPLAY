@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "794720712327",
+    "project_id": "just-play-cdefc",
+    "storage_bucket": "just-play-cdefc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794720712327:android:c8917dfc11704c5c75aa22",
+        "android_client_info": {
+          "package_name": "com.YadavStudios.JustPLAY"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs_kwwO3H_gai3I-VXJ16anpUhVDVEEsU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
