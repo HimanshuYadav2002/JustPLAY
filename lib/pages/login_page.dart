@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/Providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -71,9 +74,8 @@ class _LoginPageState extends State<LoginPage> {
                       onTapDown: _onTapDown,
                       onTapUp: _onTapUp,
                       onTapCancel: _onTapCancel,
-                      onTap: () {
-                        // Handle login action here
-                        debugPrint("Google login pressed");
+                      onTap: () async {
+                        await auth.signInWithGoogle();
                       },
                       child: AnimatedScale(
                         scale: _scale,
